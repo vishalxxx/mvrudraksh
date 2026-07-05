@@ -1,0 +1,45 @@
+{
+  "summary": "Frontend smoke test of MV Rudraksh (React + Supabase). Home, Shop, Product Detail, Categories, Journal, Static pages, Search, 404, and Admin (login + all 7 admin routes) all load and render seeded data correctly. Admin auth via Supabase works with provided credentials.",
+  "tested_scope": ["frontend", "auth", "integration"],
+  "passed": [
+    "Home hero-cta-shop / hero-cta-journal render",
+    "Home categories bento (cat-* tiles) render (4 categories)",
+    "Home product cards (product-card-*) render featured products",
+    "Home newsletter form present",
+    "Header nav to /shop works",
+    "Shop page loads 6 products + 4 category filters + sort-select (verified after ~4s load)",
+    "Product Detail page: whatsapp-inquiry + copy-upi testids present",
+    "Categories page renders tile links to /shop?category=<slug>",
+    "Journal list renders 3 blog posts (visible in screenshot)",
+    "Static pages /about /contact /faq /privacy /terms /shipping /returns return 200",
+    "Contact page exposes contact-form + contact-submit testids",
+    "Search page /search?q=... renders",
+    "404 page renders for unknown routes",
+    "Admin login (admin@mvrudraksh.com / MvRudraksh@2026) succeeds and redirects to /admin",
+    "Admin dashboard shows stat cards (6 products, 4 categories, 3 journal, 4 testimonials, 4 featured, 0 out-of-stock, 0 inquiries)",
+    "All admin routes load: /admin/products, /admin/categories, /admin/blogs, /admin/testimonials, /admin/inquiries, /admin/settings",
+    "Supabase REST verified directly (products+categories join, blog_posts, categories all HTTP 200)"
+  ],
+  "failed": [
+    {
+      "area": "frontend - performance / StrictMode",
+      "issue": "Many Supabase requests are logged as net::ERR_ABORTED on initial load (products with categories join, categories, site_settings repeated 10+ times). On first render Shop/Journal briefly appear empty; content only appears after ~2-4s once the retried fetch completes. Likely React 18 StrictMode double-mount aborting supabase-js fetches and/or SiteProvider effect running repeatedly.",
+      "evidence": "Console log shows repeated 'REQUEST FAILED: .../rest/v1/site_settings?select=* - net::ERR_ABORTED' and one abort of the products+categories join query. Direct curl to Supabase returns HTTP 200 with correct data.",
+      "priority": "MEDIUM"
+    },
+    {
+      "area": "frontend - testability",
+      "issue": "Journal list page (/journal) cards do not have data-testid='blog-card-<slug>'. Only Home.jsx applies that testid. Content.jsx Journal list should mirror it for consistent testability.",
+      "evidence": "Playwright locator '[data-testid^=blog-card-]' count=0 on /journal, but screenshot clearly shows 3 posts rendered.",
+      "priority": "LOW"
+    }
+  ],
+  "action_items": [
+    "Optional: guard SiteProvider useEffect to run once (or memoize) to stop repeated site_settings fetches",
+    "Optional: add data-testid='blog-card-<slug>' to the Journal list cards in /app/frontend/src/pages/Content.jsx for parity with Home",
+    "No blocking bugs — main agent can proceed to first finish"
+  ],
+  "success_rate": {"backend": "n/a (Supabase-direct, verified 3/3 endpoints 200)", "frontend": "100% of critical flows"},
+  "retest_needed": false,
+  "full_testing_deferred": true
+}

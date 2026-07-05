@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/lib/auth";
 import { SiteProvider } from "@/lib/site";
 import PublicLayout from "@/components/layout/PublicLayout";
+import ScrollToTop from "@/components/ScrollToTop";
 import Home from "@/pages/Home";
 import Shop from "@/pages/Shop";
 import ProductDetail from "@/pages/ProductDetail";
@@ -21,6 +22,7 @@ function App() {
       <AuthProvider>
         <SiteProvider>
           <BrowserRouter>
+            <ScrollToTop />
             <Routes>
               <Route path="/" element={wrap(<Home />)} />
               <Route path="/shop" element={wrap(<Shop />)} />

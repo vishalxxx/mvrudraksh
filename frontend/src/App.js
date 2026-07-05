@@ -1,54 +1,59 @@
-import { useEffect } from "react";
+import React from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-import { HOME } from "@/constants/testIds";
+import { AuthProvider } from "@/lib/auth";
+import { SiteProvider } from "@/lib/site";
+import PublicLayout from "@/components/layout/PublicLayout";
+import Home from "@/pages/Home";
+import Shop from "@/pages/Shop";
+import ProductDetail from "@/pages/ProductDetail";
+import { Categories, Journal, JournalPost } from "@/pages/Content";
+import { About, Contact, FAQ, Privacy, Terms, Shipping, Returns, Sitemap, SearchPage, NotFound } from "@/pages/Static";
+import AdminLogin from "@/pages/admin/Login";
+import AdminLayout from "@/pages/admin/AdminLayout";
+import { Dashboard, AdminProducts, AdminCategories, AdminBlogs, AdminTestimonials, AdminSettings, AdminInquiries } from "@/pages/admin/AdminPages";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          data-testid={HOME.emergentLink}
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+const wrap = (el) => <PublicLayout>{el}</PublicLayout>;
 
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <SiteProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={wrap(<Home />)} />
+              <Route path="/shop" element={wrap(<Shop />)} />
+              <Route path="/product/:slug" element={wrap(<ProductDetail />)} />
+              <Route path="/categories" element={wrap(<Categories />)} />
+              <Route path="/journal" element={wrap(<Journal />)} />
+              <Route path="/journal/:slug" element={wrap(<JournalPost />)} />
+              <Route path="/about" element={wrap(<About />)} />
+              <Route path="/contact" element={wrap(<Contact />)} />
+              <Route path="/faq" element={wrap(<FAQ />)} />
+              <Route path="/privacy" element={wrap(<Privacy />)} />
+              <Route path="/terms" element={wrap(<Terms />)} />
+              <Route path="/shipping" element={wrap(<Shipping />)} />
+              <Route path="/returns" element={wrap(<Returns />)} />
+              <Route path="/sitemap" element={wrap(<Sitemap />)} />
+              <Route path="/search" element={wrap(<SearchPage />)} />
+
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<Dashboard />} />
+                <Route path="products" element={<AdminProducts />} />
+                <Route path="categories" element={<AdminCategories />} />
+                <Route path="blogs" element={<AdminBlogs />} />
+                <Route path="testimonials" element={<AdminTestimonials />} />
+                <Route path="inquiries" element={<AdminInquiries />} />
+                <Route path="settings" element={<AdminSettings />} />
+              </Route>
+
+              <Route path="*" element={wrap(<NotFound />)} />
+            </Routes>
+          </BrowserRouter>
+        </SiteProvider>
+      </AuthProvider>
     </div>
   );
 }

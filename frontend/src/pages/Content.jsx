@@ -41,7 +41,7 @@ export function Journal() {
       </div>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {posts.map(b => (
-          <Link key={b.id} to={`/journal/${b.slug}`} data-testid={`journal-${b.slug}`} className="group rounded-md overflow-hidden bg-white border" style={{ borderColor: "rgba(209,199,177,0.5)" }}>
+          <Link key={b.id} to={`/journal/${b.slug}`} data-testid={`blog-card-${b.slug}`} className="group rounded-md overflow-hidden bg-white border" style={{ borderColor: "rgba(209,199,177,0.5)" }}>
             <div className="aspect-[16/10] overflow-hidden"><img src={b.featured_image} alt={b.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"/></div>
             <div className="p-6">
               <div className="overline">{b.category} · {b.reading_time || 5} min read</div>

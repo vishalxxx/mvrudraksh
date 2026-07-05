@@ -1,0 +1,130 @@
+{
+  "project_name": "MV Rudraksh",
+  "theme": "Light",
+  "archetype": "Archetype 1 (Organic & Earthy) blended with Luxury",
+  "vibe": "Authentic, Luxury, Sacred, Calm, Elegant, Trustworthy, Traditional with Modern UI",
+  "color_palette": {
+    "primary_background": "#FDFBF7",
+    "secondary_background": "#F5F2EA",
+    "primary_text": "#2C1E16",
+    "secondary_text": "#594A3C",
+    "accent_primary": "#B85D19",
+    "accent_secondary": "#D4AF37",
+    "border_color": "#D1C7B1",
+    "card_background": "#FFFFFF",
+    "hover_state": "#9A4D14"
+  },
+  "typography": {
+    "font_families": {
+      "heading": "'Cormorant Garamond', serif",
+      "body": "'Outfit', sans-serif"
+    },
+    "rules": {
+      "h1": "text-5xl sm:text-6xl font-light tracking-tight text-[#2C1E16]",
+      "h2": "text-3xl sm:text-4xl font-medium tracking-tight text-[#2C1E16]",
+      "h3": "text-xl sm:text-2xl font-medium text-[#2C1E16]",
+      "body": "text-base font-light leading-relaxed text-[#594A3C]",
+      "overline": "text-xs font-semibold uppercase tracking-[0.2em] text-[#B85D19]"
+    }
+  },
+  "spacing_and_layout": {
+    "generous_spacing": "Use p-8, p-12, p-20, p-24 for section padding.",
+    "border_radius": "Subtle roundness, max 4px to 8px (rounded-sm or rounded-md) for an elegant, non-childish look.",
+    "grid_system": "Bento grids for collections. Asymmetric layouts for storytelling sections."
+  },
+  "component_styles": {
+    "buttons": {
+      "primary": "bg-[#B85D19] text-white px-8 py-3 rounded-md hover:bg-[#9A4D14] transition-all duration-300 shadow-sm",
+      "secondary": "border border-[#D1C7B1] text-[#2C1E16] bg-transparent px-8 py-3 rounded-md hover:bg-[#F5F2EA] transition-all duration-300",
+      "ghost": "text-[#B85D19] hover:text-[#9A4D14] underline underline-offset-4 transition-all"
+    },
+    "cards": {
+      "product_card": "bg-white border border-[#D1C7B1]/40 rounded-md overflow-hidden hover:shadow-[0_8px_32px_rgba(44,30,22,0.08)] transition-all duration-300",
+      "journal_card": "bg-[#F5F2EA] rounded-md overflow-hidden hover:-translate-y-1 transition-transform duration-300"
+    },
+    "navigation": {
+      "header": "bg-[#FDFBF7]/90 backdrop-blur-xl border-b border-[#D1C7B1]/30 sticky top-0 z-50",
+      "links": "text-sm uppercase tracking-wider text-[#594A3C] hover:text-[#B85D19] transition-colors"
+    },
+    "filters": {
+      "sidebar": "border-r border-[#D1C7B1]/40 pr-6",
+      "checkbox": "accent-[#B85D19] rounded-sm"
+    }
+  },
+  "blueprints": {
+    "home_page": [
+      {"section": "Hero Banner", "details": "Full-width slider/video with dark overlay (max bg-black/30). Huge Cormorant Garamond heading. Primary CTA to Shop."},
+      {"section": "Featured Collections", "details": "Asymmetric bento grid of categories (Mukhi, Origin, Mala). Ivory and Gold accents."},
+      {"section": "Featured Products", "details": "Carousel of Best Sellers. Product cards with crisp images, subtle borders, and Copper add-to-inquiry buttons."},
+      {"section": "Why Choose Us / Benefits", "details": "Text-heavy storytelling section. Light Sand background. Use 'overline' typography. Minimalist iconography."},
+      {"section": "Testimonials", "details": "Elegant sliding text over a serene temple architecture background (with dark or light overlay)."},
+      {"section": "Journal Preview", "details": "3-column grid of latest articles. Natural earthy imagery."},
+      {"section": "Newsletter & Footer", "details": "Deep Brown (#2C1E16) background with Ivory text for high luxury contrast. Massive 'MV Rudraksh' logo typography in footer."}
+    ],
+    "shop_page": {
+      "layout": "2-column layout on desktop: Left sidebar for advanced filters (Category, Mukhi, Origin, Size, Weight, Price), Right grid for products.",
+      "product_grid": "3 or 4 columns (grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4). gap-8."
+    },
+    "product_details_page": {
+      "layout": "Split layout: Sticky product details on right, scrollable image gallery on left.",
+      "sections": [
+        "Image Gallery (Zoom on hover)",
+        "Title, Price, Origin, Mukhi Badges",
+        "WhatsApp Order CTA (Primary) + UPI info text",
+        "Accordion/Tabs for: Specifications, Certificates, Mantra, Planet, Deity, Chakra",
+        "Related Products Carousel"
+      ]
+    },
+    "admin_cms": {
+      "theme": "Swiss & High-Contrast variant but keeping the warm brand colors. Dense, functional.",
+      "sidebar": "bg-[#2C1E16] text-[#FDFBF7] w-64 fixed h-screen.",
+      "content_area": "bg-[#F5F2EA] p-8",
+      "tables": "bg-white rounded-md border border-[#D1C7B1]/40 shadow-sm. Use Shadcn Table.",
+      "forms": "Product creation with Shadcn Form, Input, Select, and Tabs for organizing product data (Basic Info, SEO, Spiritual Specs)."
+    }
+  },
+  "motion_and_animation": {
+    "scroll": "Use Lenis for smooth momentum scrolling.",
+    "page_transitions": "Subtle fade-in and translate-y up (framer-motion).",
+    "hover_effects": "Image scaling within overflow-hidden containers (scale-105 duration-700).",
+    "micro_interactions": "Button text slide-up or arrow translate-x on hover."
+  },
+  "media": {
+    "image_urls": [
+      {
+        "category": "Product / Rudraksha Beads",
+        "url": "https://images.unsplash.com/photo-1613274146063-8930e164c743?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA4Mzl8MHwxfHNlYXJjaHwxfHx3b29kZW4lMjBqYXBhJTIwbWFsYSUyMGJlYWRzfGVufDB8fHx8MTc4MjU0NzMzMnww&ixlib=rb-4.1.0&q=85",
+        "description": "blue and gold beaded bracelet / close up of mala beads"
+      },
+      {
+        "category": "Hero Background / Ambience",
+        "url": "https://images.pexels.com/photos/37527354/pexels-photo-37527354.jpeg",
+        "description": "Serene corridor of a traditional Hindu temple showcasing wooden architecture and brass bells."
+      },
+      {
+        "category": "Hero Background / Nature Temple",
+        "url": "https://images.pexels.com/photos/28828566/pexels-photo-28828566.jpeg",
+        "description": "Discover ancient stone temples surrounded by dense greenery in a serene forest landscape."
+      },
+      {
+        "category": "Journal / Spiritual Wellness",
+        "url": "https://images.unsplash.com/photo-1639390167093-9c62311fe84d",
+        "description": "Incense smoke sitting in a bowl on a table"
+      },
+      {
+        "category": "Journal / Atmosphere",
+        "url": "https://images.unsplash.com/photo-1551690935-a9e6f0a7e788",
+        "description": "lighted incense with smooth smoke"
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Use Tailwind CSS purely for styling with the provided color palette.",
+    "Ensure 'Cormorant Garamond' and 'Outfit' fonts are imported via Google Fonts.",
+    "Do NOT use 'Inter', 'Roboto', or purple gradients anywhere on the site.",
+    "Every button and interactive element must have a 'data-testid' attribute (e.g., data-testid='shop-now-button').",
+    "Use Shadcn UI components for complex logic (Select, Dialog, Tabs, Table for Admin) but customize the Tailwind classes to match the 'Organic & Earthy Luxury' archetype.",
+    "The hero section should use bg-black/30 or bg-black/40 overlay max; do not obscure the images heavily.",
+    "Include WhatsApp inquiry functionality on the product page as requested (no direct online payment gateway checkout)."
+  ]
+}

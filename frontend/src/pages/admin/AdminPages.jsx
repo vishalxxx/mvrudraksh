@@ -326,17 +326,39 @@ export function AdminTestimonials() {
 export function AdminInquiries() {
   const [rows, setRows] = useState([]);
   useEffect(()=>{ supabase.from("inquiries").select("*").order("created_at",{ascending:false}).then(({data})=>setRows(data||[])); },[]);
+  const waLink = (phone, name, message) => {
+    const digits = (phone||"").replace(/\D/g, "");
+    if (!digits) return "";
+    const text = encodeURIComponent(`Namaste ${name || ""}, thank you for reaching out to MV Rudraksh regarding: "${(message||"").slice(0,120)}". How may we assist you?`);
+    return `https://wa.me/${digits}?text=${text}`;
+  };
   return (
     <div>
       <h1 className="font-serif-display text-4xl mb-6" style={{color:"var(--ink)"}}>Inquiries</h1>
       <div className="bg-white rounded-md border divide-y" style={{borderColor:"var(--line)"}}>
         {rows.length===0 && <div className="p-8 text-center" style={{color:"var(--ink-2)"}}>No inquiries yet</div>}
-        {rows.map(r=>(
-          <div key={r.id} className="p-4">
-            <div className="flex items-center justify-between"><div className="font-medium" style={{color:"var(--ink)"}}>{r.name} <span className="text-xs opacity-60">· {r.email} · {r.phone}</span></div><div className="text-xs" style={{color:"var(--ink-2)"}}>{new Date(r.created_at).toLocaleString()}</div></div>
-            <div className="mt-2 text-sm" style={{color:"var(--ink-2)"}}>{r.message}</div>
-          </div>
-        ))}
+        {rows.map(r=>{
+          const wa = waLink(r.phone, r.name, r.message);
+          return (
+            <div key={r.id} className="p-4">
+              <div className="flex items-start justify-between gap-4 flex-wrap">
+                <div className="min-w-0 flex-1">
+                  <div className="font-medium" style={{color:"var(--ink)"}}>{r.name} <span className="text-xs opacity-60">· {r.email} · {r.phone || "no phone"}</span></div>
+                  <div className="mt-2 text-sm" style={{color:"var(--ink-2)"}}>{r.message}</div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <div className="text-xs" style={{color:"var(--ink-2)"}}>{new Date(r.created_at).toLocaleString()}</div>
+                  {r.email && <a href={`mailto:${r.email}`} className="text-xs px-3 py-1.5 rounded-sm border hover:bg-[var(--cream)]" style={{borderColor:"var(--line)", color:"var(--ink)"}} data-testid={`inq-email-${r.id}`}>Email</a>}
+                  {wa && (
+                    <a href={wa} target="_blank" rel="noreferrer" className="text-xs px-3 py-1.5 rounded-sm text-white inline-flex items-center gap-1" style={{background:"#25D366"}} data-testid={`inq-wa-${r.id}`}>
+                      WhatsApp
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { ArrowRight, BadgeCheck, Sparkles, Mountain, Heart, Star } from "lucide-
 import { supabase } from "@/lib/supabase";
 import { useSite } from "@/lib/site";
 import ProductCard from "@/components/ProductCard";
+import AutoCarousel from "@/components/AutoCarousel";
 
 const ICONS = { BadgeCheck, Sparkles, Mountain, Heart };
 
@@ -50,28 +51,28 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Categories bento */}
+      {/* Categories carousel */}
       <Section title="Featured Collections" overline="Curated" >
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-          {cats.slice(0,4).map((c, i) => (
-            <Link key={c.id} to={`/shop?category=${c.slug}`} data-testid={`cat-${c.slug}`} className="group relative overflow-hidden rounded-md aspect-[4/3]">
+        <AutoCarousel speed={35} itemClass="w-72 sm:w-80">
+          {cats.map((c) => (
+            <Link key={c.id} to={`/shop?category=${c.slug}`} data-testid={`cat-${c.slug}`} className="group relative overflow-hidden rounded-md aspect-[4/3] block">
               <img src={c.image_url} alt={c.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,rgba(0,0,0,0),rgba(44,30,22,0.7))" }} />
-              <div className="absolute bottom-0 left-0 p-6">
+              <div className="absolute bottom-0 left-0 p-5">
                 <div className="overline" style={{ color: "#F5D989" }}>Collection</div>
                 <div className="font-serif-display text-2xl mt-1" style={{ color: "#FDFBF7" }}>{c.name}</div>
               </div>
             </Link>
           ))}
-        </div>
+        </AutoCarousel>
       </Section>
 
-      {/* Featured products */}
+      {/* Featured products carousel */}
       {featured.length > 0 && (
         <Section title="Featured Rudraksha" overline="Handpicked">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featured.slice(0,8).map((p) => <ProductCard key={p.id} p={p} />)}
-          </div>
+          <AutoCarousel speed={50} itemClass="w-56 sm:w-64">
+            {featured.map((p) => <ProductCard key={p.id} p={p} />)}
+          </AutoCarousel>
         </Section>
       )}
 

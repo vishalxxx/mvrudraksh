@@ -1,0 +1,21 @@
+{
+  "summary": "Home page auto-scrolling carousels for Featured Collections and Featured Rudraksha verified. Both use mvMarquee CSS animation, duplicate children (2x), and pause-on-hover CSS rule is present. Category and product tile routes intact.",
+  "tested_scope": ["frontend"],
+  "passed": [
+    "2 [data-testid=auto-carousel] elements render on / (one for Collections, one for Featured Rudraksha)",
+    "Featured Collections heading present; inner .auto-marquee has 10 children (5 cats x 2) and animation-name=mvMarquee, duration=35s",
+    "Featured Rudraksha heading present; inner .auto-marquee has 8 children (4 products x 2), animation-name=mvMarquee, duration=50s",
+    "Pause-on-hover CSS rule '.group:hover .auto-marquee { animation-play-state: paused }' present in DOM",
+    "Category tiles retain data-testid=cat-<slug> and href=/shop?category=<slug>",
+    "Product cards inside 2nd carousel route to /product/<slug> (e.g., /product/5-mukhi-rudraksha-nepal)",
+    "Existing sections (Why MV Rudraksh, Testimonials 'Trusted by 10,000+ seekers', Newsletter) still render",
+    "No carousel-related console errors"
+  ],
+  "failed": [],
+  "action_items": [
+    "Minor (pre-existing, not blocker): 2 React warnings 'empty string passed to src attribute' — likely a testimonial/category image with empty image_url in Supabase; unrelated to carousel work."
+  ],
+  "success_rate": {"backend": "N/A", "frontend": "100%"},
+  "retest_needed": false,
+  "full_testing_deferred": true
+}

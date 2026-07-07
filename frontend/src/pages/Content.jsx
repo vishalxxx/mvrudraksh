@@ -13,7 +13,7 @@ export function Categories() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {cats.map(c => (
-          <Link to={`/shop?category=${c.slug}`} key={c.id} data-testid={`categories-${c.slug}`} className="group relative overflow-hidden rounded-md aspect-[4/3]">
+          <Link to={`/shop?category=${c.slug}`} key={c.id} data-testid={`categories-${c.slug}`} className="group relative overflow-hidden rounded-md aspect-[2/1] sm:aspect-[16/9]">
             <img src={c.image_url} alt={c.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"/>
             <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,rgba(0,0,0,0.1),rgba(44,30,22,0.75))" }}/>
             <div className="absolute bottom-0 left-0 p-6" style={{ color: "#FDFBF7" }}>

@@ -54,7 +54,7 @@ export default function Home() {
       <Section title="Featured Collections" overline="Curated" >
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {cats.slice(0,4).map((c, i) => (
-            <Link key={c.id} to={`/shop?category=${c.slug}`} data-testid={`cat-${c.slug}`} className={`group relative overflow-hidden rounded-md ${i===0 ? "lg:col-span-2 lg:row-span-2 aspect-square lg:aspect-auto" : "aspect-square"}`}>
+            <Link key={c.id} to={`/shop?category=${c.slug}`} data-testid={`cat-${c.slug}`} className={`group relative overflow-hidden rounded-md ${i===0 ? "lg:col-span-2 lg:row-span-2 aspect-[3/2] lg:aspect-auto" : "aspect-[3/2]"}`}>
               <img src={c.image_url} alt={c.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,rgba(0,0,0,0),rgba(44,30,22,0.7))" }} />
               <div className="absolute bottom-0 left-0 p-6">

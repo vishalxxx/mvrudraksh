@@ -1,0 +1,26 @@
+{
+  "summary": "Verified 3 UI fixes on Home and Shop pages at 1440x900. Featured Collections now shows 4 evenly-sized cards in a 4-column grid (288px each) with no empty slot. Vertical gap between last category card and 'Featured Rudraksha' H2 measured 142px (reduced from prior py-24). Shop page grid renders 5 columns of ~163px cards at xl breakpoint, ~50% smaller than before. Category card links and product card links work (regression clean). One minor data anomaly flagged (see failed).",
+  "tested_scope": ["frontend"],
+  "passed": [
+    "Home /: 4 category cards rendered in single row, grid-template-columns = '288px 288px 288px 288px', all same top (1017), no 5th empty slot",
+    "Home /: gap between last category card bottom (1209px) and 'Featured Rudraksha' H2 top (1351px) = 142px — visibly reduced (py-14 applied)",
+    "Shop /shop: grid-template-columns = 5 columns (~163px each) at 1440px — matches xl:grid-cols-5; cards ~50% smaller than prior 1/2/3 layout",
+    "Category card link href = /shop?category=<slug> (regression OK)",
+    "Product card link href = /product/<slug> (regression OK)",
+    "No blocking console errors on Home or Shop (only a benign React warning about empty img src attribute)"
+  ],
+  "failed": [
+    {
+      "area": "Seed data (Home Featured Collections)",
+      "issue": "Categories rendered: ['Rudraksh under the hood', 'Mukhi Rudraksha', 'Rudraksha Mala', 'Bracelets']. Expected per spec: Mukhi Rudraksha, Rudraksha Mala, Bracelets, Combinations. A stray category 'Rudraksh under the hood' occupies the first slot due to sort_order, pushing 'Combinations' out of the .slice(0,4) window. Shop filter sidebar shows 5 categories including both. Not a UI-fix regression, but flagged per test brief.",
+      "evidence": "cat testids: ['cat-rudraksh under the hood', 'cat-mukhi-rudraksha', 'cat-rudraksha-mala', 'cat-bracelets']; Shop filter shows: Rudraksh, Mukhi Rudraksha, Rudraksha Mala, Bracelets, Combinations",
+      "priority": "MEDIUM"
+    }
+  ],
+  "action_items": [
+    "Data cleanup: remove or fix sort_order of the 'Rudraksh under the hood' seed category so the 4 intended collections (Mukhi Rudraksha, Rudraksha Mala, Bracelets, Combinations) show on home Featured Collections."
+  ],
+  "success_rate": {"backend": "N/A (frontend-only test)", "frontend": "100% for the 3 requested UI fixes"},
+  "retest_needed": false,
+  "full_testing_deferred": true
+}

@@ -54,7 +54,7 @@ export default function Home() {
       <Section title="Featured Collections" overline="Curated" >
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {cats.slice(0,4).map((c, i) => (
-            <Link key={c.id} to={`/shop?category=${c.slug}`} data-testid={`cat-${c.slug}`} className={`group relative overflow-hidden rounded-md ${i===0 ? "lg:col-span-2 lg:row-span-2 aspect-[3/2] lg:aspect-auto" : "aspect-[3/2]"}`}>
+            <Link key={c.id} to={`/shop?category=${c.slug}`} data-testid={`cat-${c.slug}`} className="group relative overflow-hidden rounded-md aspect-[3/2]">
               <img src={c.image_url} alt={c.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,rgba(0,0,0,0),rgba(44,30,22,0.7))" }} />
               <div className="absolute bottom-0 left-0 p-6">
@@ -157,9 +157,9 @@ export default function Home() {
 
 function Section({ title, overline, children }) {
   return (
-    <section className="py-24">
+    <section className="py-14">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
-        <div className="flex items-end justify-between mb-12 gap-6 flex-wrap">
+        <div className="flex items-end justify-between mb-8 gap-6 flex-wrap">
           <div>
             <div className="overline">{overline}</div>
             <h2 className="font-serif-display text-4xl sm:text-5xl mt-3" style={{ color: "var(--ink)" }}>{title}</h2>

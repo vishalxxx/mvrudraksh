@@ -24,6 +24,7 @@ export default function Shop() {
   const selectedCategory = params.get("category") || "";
   const selectedMukhi = params.get("mukhi") || "";
   const selectedOrigin = params.get("origin") || "";
+  const selectedPC = params.get("pc") || "";
   const q = params.get("q") || "";
 
   useEffect(() => {
@@ -41,6 +42,7 @@ export default function Shop() {
     if (selectedCategory) list = list.filter(p => p.categories?.slug === selectedCategory);
     if (selectedMukhi) list = list.filter(p => (p.mukhi || "").toLowerCase() === selectedMukhi.toLowerCase());
     if (selectedOrigin) list = list.filter(p => (p.origin || "").toLowerCase() === selectedOrigin.toLowerCase());
+    if (selectedPC) list = list.filter(p => (p.collection || "").toLowerCase() === selectedPC.toLowerCase());
     if (minPrice) list = list.filter(p => Number(p.selling_price) >= Number(minPrice));
     if (maxPrice) list = list.filter(p => Number(p.selling_price) <= Number(maxPrice));
     if (q) {
@@ -60,10 +62,11 @@ export default function Shop() {
       default: list.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
     }
     return list;
-  }, [all, selectedCategory, selectedMukhi, selectedOrigin, minPrice, maxPrice, q, sort]);
+  }, [all, selectedCategory, selectedMukhi, selectedOrigin, selectedPC, minPrice, maxPrice, q, sort]);
 
   const mukhis = [...new Set(all.map(p => p.mukhi).filter(Boolean))];
   const origins = [...new Set(all.map(p => p.origin).filter(Boolean))];
+  const productCats = [...new Set(all.map(p => p.collection).filter(Boolean))];
 
   const setP = (key, val) => {
     const next = new URLSearchParams(params);
@@ -75,6 +78,7 @@ export default function Shop() {
     selectedCategory && { k: "category", v: selectedCategory },
     selectedMukhi && { k: "mukhi", v: selectedMukhi },
     selectedOrigin && { k: "origin", v: selectedOrigin },
+    selectedPC && { k: "pc", v: selectedPC },
     q && { k: "q", v: q },
   ].filter(Boolean);
 
@@ -89,11 +93,18 @@ export default function Shop() {
         {/* Sidebar */}
         <aside className={`${openFilter ? "block" : "hidden"} lg:block`}>
           <div className="lg:sticky lg:top-28 space-y-6 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-2" data-testid="shop-filters">
-            <FilterBlock title="Category">
+            <FilterBlock title="Collection">
               {cats.map(c => (
                 <FilterOption key={c.id} label={c.name} checked={selectedCategory===c.slug} onChange={()=>setP("category", selectedCategory===c.slug ? "" : c.slug)} testid={`filter-cat-${c.slug}`}/>
               ))}
             </FilterBlock>
+            {productCats.length > 0 && (
+              <FilterBlock title="Product Category">
+                {productCats.map(pc => (
+                  <FilterOption key={pc} label={pc} checked={selectedPC===pc} onChange={()=>setP("pc", selectedPC===pc ? "" : pc)} testid={`filter-pc-${pc.replace(/\s+/g,'-').toLowerCase()}`}/>
+                ))}
+              </FilterBlock>
+            )}
             <FilterBlock title="Mukhi">
               {mukhis.map(m => (
                 <FilterOption key={m} label={m} checked={selectedMukhi===m} onChange={()=>setP("mukhi", selectedMukhi===m ? "" : m)} testid={`filter-mukhi-${m.replace(/\s+/g,'-').toLowerCase()}`}/>

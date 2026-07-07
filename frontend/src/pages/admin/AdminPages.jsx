@@ -149,6 +149,7 @@ function ProductForm({ product, onDone, onCancel }) {
           <Select label="Category" value={f.category_id||""} onChange={v=>set("category_id",v||null)} options={[{v:"",l:"—"}].concat(cats.map(c=>({v:c.id, l:c.name})))}/>
           <Input label="Mukhi" value={f.mukhi} onChange={v=>set("mukhi",v)}/>
           <Input label="Origin" value={f.origin} onChange={v=>set("origin",v)}/>
+          <Input label="Product Category" value={f.collection || ""} onChange={v=>set("collection",v)} placeholder="e.g. For Wealth, For Peace, Meditation" testid="pf-collection"/>
           <Input label="Size (mm)" value={f.size_mm} onChange={v=>set("size_mm",v)}/>
           <Input label="Weight (g)" value={f.weight_g} onChange={v=>set("weight_g",v)}/>
           <Input label="MRP" type="number" value={f.mrp} onChange={v=>set("mrp",v)}/>

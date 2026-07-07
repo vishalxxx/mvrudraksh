@@ -1,0 +1,35 @@
+{
+  "summary": "Frontend-only test of new Product Category taxonomy on /shop and Admin ProductForm. Shop sidebar shows both Collection and new Product Category filter blocks with all 6 seeded values (For Peace, For Wealth, Meditation, Enlightenment, Daily Wear, Relationships). Clicking filter-pc-for-wealth updated URL to ?pc=For+Wealth and filtered products correctly. Combining Collection=mukhi-rudraksha + pc=For Wealth intersected to 1 product (7 Mukhi). Active chips visible with X (mukhi-rudraksha X, For Wealth X). Admin edit form shows Product Category input (data-testid=pf-collection) with existing value; edited Relationships->For Peace, saved, reopened form and value persisted. Restored seed value after test.",
+  "tested_scope": ["frontend", "integration", "auth"],
+  "passed": [
+    "Shop page loads and renders Product Category FilterBlock with all 6 slugs (for-peace, for-wealth, meditation, enlightenment, daily-wear, relationships)",
+    "filter-pc-for-wealth click updates URL to ?pc=For+Wealth",
+    "Combining ?pc=For+Wealth&category=mukhi-rudraksha produces intersection (1 product)",
+    "Active filter chips visible for both category and pc filters with X close",
+    "Collection filter (filter-cat-*), Mukhi/Origin/Price still render (no regression on sidebar)",
+    "Admin login with admin@mvrudraksh.com succeeds",
+    "Admin ProductForm displays Product Category input (data-testid=pf-collection) with label 'Product Category'",
+    "Editing pf-collection value and Save persists to Supabase; reopening confirms persisted value (Relationships -> For Peace -> restored)"
+  ],
+  "failed": [
+    {
+      "area": "Shop sidebar - Collection filter",
+      "issue": "One collection option has malformed slug 'rudraksh under the hood' (data-testid=filter-cat-rudraksh under the hood) — has spaces in testid and label 'Rudraksh' looks like leaked debug/placeholder seed row",
+      "evidence": "collection testids: ['filter-cat-rudraksh under the hood', 'filter-cat-mukhi-rudraksha', 'filter-cat-rudraksha-mala', 'filter-cat-bracelets', 'filter-cat-combinations']",
+      "priority": "LOW"
+    },
+    {
+      "area": "Active filter chips",
+      "issue": "Filter chips render visually with X but lack data-testid (e.g., chip-pc-for-wealth). Chip X clear was validated visually but not via testid selector",
+      "evidence": "document.querySelectorAll for chip testids returned []; chips visible in screenshot",
+      "priority": "LOW"
+    }
+  ],
+  "action_items": [
+    "Investigate stray 'Rudraksh' collection value in categories/seed data (filter-cat-rudraksh under the hood)",
+    "Optional: add data-testid to active filter chips (chip-pc-<slug>, chip-cat-<slug>) for automated chip-clear testing"
+  ],
+  "success_rate": {"backend": "n/a", "frontend": "95%"},
+  "retest_needed": false,
+  "full_testing_deferred": true
+}

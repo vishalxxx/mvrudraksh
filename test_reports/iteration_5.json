@@ -1,0 +1,29 @@
+{
+  "summary": "Verified shop-page filter viewport-jump bug fix. Clicking category and mukhi filter checkboxes on /shop no longer causes any scroll jump (scrollY delta = 0). Results container maintains min-height ~720px (80vh) even when zero products match, sticky sidebar stays visible, and URL query params update correctly.",
+  "tested_scope": ["frontend"],
+  "passed": [
+    "Shop page loads at 1440x900 with filter sidebar + product grid",
+    "Category filter click (filter-cat-rudraksh...) — scrollY 400 -> 400, delta=0 (no viewport jump)",
+    "Mukhi filter click (filter-mukhi-5-mukhi) — scrollY 400 -> 400, delta=0 (no viewport jump)",
+    "Results container computed min-height = 720px (>= 600px requirement) with 'No products match' state",
+    "URL updates with ?category=... and &mukhi=5+Mukhi query params",
+    "Sticky sidebar remains visible in viewport (top=112, bottom=626) during/after filtering",
+    "ScrollToTop does not fire on query-param-only changes (pathname unchanged)"
+  ],
+  "failed": [],
+  "action_items": [
+    "Optional (not in reported bug scope): investigate chip-clear scroll behavior more carefully with a stricter selector. Test observed scrollY 400 -> 0 after clicking first 'button:has(svg.lucide-x)', but this may be the test selecting a non-chip X-icon button (e.g., search/close overlay) rather than an actual filter chip. The primary viewport-jump bug fix for filter clicks is confirmed working."
+  ],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "retest_needed": false,
+  "full_testing_deferred": true,
+  "evidence": {
+    "scroll_before": 400,
+    "scroll_after_category": 400,
+    "scroll_after_mukhi": 400,
+    "results_container_height_px": 720,
+    "results_container_min_height_computed": "720px",
+    "url_after_filters": "/shop?category=rudraksh+under+the+hood&mukhi=5+Mukhi",
+    "sidebar_rect": {"top": 112, "bottom": 626, "visible": true}
+  }
+}

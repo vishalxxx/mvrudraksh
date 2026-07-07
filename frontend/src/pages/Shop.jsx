@@ -114,7 +114,7 @@ export default function Shop() {
         </aside>
 
         {/* Products */}
-        <div>
+        <div className="min-h-[80vh]">
           <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
             <button className="lg:hidden inline-flex items-center gap-2 px-4 py-2 rounded-md border" style={{ borderColor: "var(--line)" }} onClick={()=>setOpenFilter(v=>!v)} data-testid="mobile-filter-btn">
               <SlidersHorizontal size={16}/> Filters

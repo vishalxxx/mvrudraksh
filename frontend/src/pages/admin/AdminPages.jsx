@@ -3,6 +3,7 @@ import { supabase, uploadToCloudinary } from "@/lib/supabase";
 import { Package, Layers, FileText, MessageSquare, Star, Sparkles, Inbox } from "lucide-react";
 import { Link } from "react-router-dom";
 import { productImage, slugify, money } from "@/lib/utils.helpers";
+import ImageUploadInput from "@/components/ImageUploadInput";
 
 export function Dashboard() {
   const [stats, setStats] = useState({});
@@ -221,7 +222,8 @@ export function AdminCategories() {
           <Grid>
             <Input label="Name" value={editing.name} onChange={v=>setEditing({...editing, name:v})} required/>
             <Input label="Slug" value={editing.slug} onChange={v=>setEditing({...editing, slug:v})}/>
-            <Input label="Image URL" value={editing.image_url||""} onChange={v=>setEditing({...editing, image_url:v})}/>
+            <ImageUploadInput label="Category Image" value={editing.image_url||""} onChange={v=>setEditing({...editing, image_url:v})} testid="cat-image-upload"/>
+            <ImageUploadInput label="Banner Image" value={editing.banner_url||""} onChange={v=>setEditing({...editing, banner_url:v})} testid="cat-banner-upload"/>
             <Input label="Sort Order" type="number" value={editing.sort_order} onChange={v=>setEditing({...editing, sort_order:Number(v)})}/>
           </Grid>
           <TextArea label="Description" value={editing.description||""} onChange={v=>setEditing({...editing, description:v})}/>
@@ -258,7 +260,8 @@ export function AdminBlogs() {
             <Input label="Slug" value={editing.slug} onChange={v=>setEditing({...editing,slug:v})}/>
             <Input label="Author" value={editing.author||""} onChange={v=>setEditing({...editing,author:v})}/>
             <Input label="Category" value={editing.category||""} onChange={v=>setEditing({...editing,category:v})}/>
-            <Input label="Featured Image URL" value={editing.featured_image||""} onChange={v=>setEditing({...editing,featured_image:v})}/>
+            <ImageUploadInput label="Featured / Cover Image" value={editing.featured_image||""} onChange={v=>setEditing({...editing,featured_image:v})} testid="blog-image-upload"/>
+            <ImageUploadInput label="Banner Image" value={editing.banner_image||""} onChange={v=>setEditing({...editing,banner_image:v})} testid="blog-banner-upload"/>
             <Input label="Reading Time (min)" type="number" value={editing.reading_time||5} onChange={v=>setEditing({...editing,reading_time:Number(v)})}/>
             <Input label="Tags (comma)" value={Array.isArray(editing.tags)?editing.tags.join(", "):editing.tags||""} onChange={v=>setEditing({...editing,tags:v})}/>
             <Select label="Status" value={editing.status} onChange={v=>setEditing({...editing,status:v})} options={[{v:"published",l:"Published"},{v:"draft",l:"Draft"}]}/>
@@ -286,27 +289,31 @@ export function AdminBlogs() {
 // Testimonials admin
 export function AdminTestimonials() {
   const [rows, setRows] = useState([]);
-  const [f, setF] = useState({ author_name:"", location:"", content:"", rating:5, is_featured:true });
+  const [f, setF] = useState({ author_name:"", location:"", content:"", rating:5, avatar_url:"", is_featured:true });
   const load = async () => { const {data} = await supabase.from("testimonials").select("*").order("created_at",{ascending:false}); setRows(data||[]); };
   useEffect(()=>{load();},[]);
-  const add = async (e) => { e.preventDefault(); const {error}=await supabase.from("testimonials").insert(f); if(error) alert(error.message); else { setF({author_name:"",location:"",content:"",rating:5,is_featured:true}); load(); } };
+  const add = async (e) => { e.preventDefault(); const {error}=await supabase.from("testimonials").insert(f); if(error) alert(error.message); else { setF({author_name:"",location:"",content:"",rating:5,avatar_url:"",is_featured:true}); load(); } };
   const del = async (id) => { if(!window.confirm("Delete?"))return; await supabase.from("testimonials").delete().eq("id",id); load(); };
   return (
     <div>
-      <h1 className="font-serif-display text-4xl mb-6" style={{color:"var(--ink)"}}>Testimonials</h1>
+      <h1 className="font-serif-display text-4xl mb-6" style={{color:"var(--ink)"}}>Testimonials · Voice of Devotees</h1>
       <form onSubmit={add} className="mb-6 bg-white p-6 rounded-md border space-y-3" style={{borderColor:"var(--line)"}}>
         <Grid>
           <Input label="Author" value={f.author_name} onChange={v=>setF({...f,author_name:v})} required/>
           <Input label="Location" value={f.location} onChange={v=>setF({...f,location:v})}/>
           <Input label="Rating" type="number" value={f.rating} onChange={v=>setF({...f,rating:Number(v)})}/>
+          <ImageUploadInput label="Profile Image / Avatar" value={f.avatar_url} onChange={v=>setF({...f, avatar_url:v})} testid="testi-avatar-upload"/>
         </Grid>
         <TextArea label="Content" value={f.content} onChange={v=>setF({...f,content:v})}/>
         <button className="btn-primary">Add Testimonial</button>
       </form>
       <div className="bg-white rounded-md border divide-y" style={{borderColor:"var(--line)"}}>
         {rows.map(r=>(
-          <div key={r.id} className="p-4 flex items-start justify-between">
-            <div><div className="font-medium" style={{color:"var(--ink)"}}>{r.author_name} <span className="text-xs opacity-60">· {r.location}</span></div><div className="text-sm mt-1" style={{color:"var(--ink-2)"}}>"{r.content}"</div></div>
+          <div key={r.id} className="p-4 flex items-start justify-between gap-4">
+            <div className="flex items-start gap-3 flex-1">
+              {r.avatar_url ? <img src={r.avatar_url} alt="" className="w-12 h-12 rounded-full object-cover"/> : <div className="w-12 h-12 rounded-full flex items-center justify-center font-serif-display" style={{background:"var(--copper)", color:"white"}}>{(r.author_name||"?").charAt(0)}</div>}
+              <div><div className="font-medium" style={{color:"var(--ink)"}}>{r.author_name} <span className="text-xs opacity-60">· {r.location}</span></div><div className="text-sm mt-1" style={{color:"var(--ink-2)"}}>"{r.content}"</div></div>
+            </div>
             <button onClick={()=>del(r.id)} className="text-xs px-2 py-1 text-red-600">Delete</button>
           </div>
         ))}
@@ -342,10 +349,31 @@ export function AdminSettings() {
   const load = async () => { const {data} = await supabase.from("site_settings").select("*"); setRows(data||[]); const m={}; (data||[]).forEach(r=>m[r.key]=JSON.stringify(r.value,null,2)); setDrafts(m); };
   useEffect(()=>{load();},[]);
   const save = async (key) => { try { const value = JSON.parse(drafts[key]); const {error} = await supabase.from("site_settings").upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict:"key" }); if(error) alert(error.message); else alert("Saved"); } catch(e) { alert("Invalid JSON: "+e.message); } };
+
+  const uploadUpiQR = async (file) => {
+    const r = await uploadToCloudinary(file);
+    const contact = JSON.parse(drafts.contact || "{}");
+    contact.upi_qr = r.secure_url;
+    const nextTxt = JSON.stringify(contact, null, 2);
+    setDrafts({ ...drafts, contact: nextTxt });
+    await supabase.from("site_settings").upsert({ key: "contact", value: contact, updated_at: new Date().toISOString() }, { onConflict:"key" });
+    alert("UPI QR uploaded and saved.");
+  };
+
   return (
     <div>
       <h1 className="font-serif-display text-4xl mb-6" style={{color:"var(--ink)"}}>Site Settings</h1>
       <p className="text-sm mb-6" style={{color:"var(--ink-2)"}}>Edit any section as JSON. All homepage sections, hero, contact, social, and footer are managed here.</p>
+
+      <div className="mb-6 bg-white p-5 rounded-md border" style={{borderColor:"var(--line)"}}>
+        <div className="overline mb-2">Quick: UPI QR Code Image</div>
+        <p className="text-xs mb-3" style={{color:"var(--ink-2)"}}>Upload a custom UPI QR image. It will show on every product page. If left empty, a dynamic QR is auto-generated from the UPI ID.</p>
+        <label className="btn-primary text-xs cursor-pointer" data-testid="upi-qr-upload">
+          Upload UPI QR
+          <input type="file" accept="image/*" onChange={(e)=>{const f=e.target.files?.[0]; if(f) uploadUpiQR(f);}} className="hidden"/>
+        </label>
+      </div>
+
       <div className="space-y-4">
         {rows.map(r=>(
           <div key={r.key} className="bg-white p-4 rounded-md border" style={{borderColor:"var(--line)"}}>

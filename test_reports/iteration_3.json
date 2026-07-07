@@ -1,0 +1,26 @@
+{
+  "summary": "Frontend-only smoke test of 12 bug fixes for MV Rudraksh. All 12 items verified successfully across Home, Header live search, Product Detail, Shop, and 4 Admin pages (Categories, Blogs, Testimonials, Settings). Admin login (admin@mvrudraksh.com) worked via Sign In button (button lacks type=submit but is reachable by role/name).",
+  "tested_scope": ["frontend", "integration", "auth"],
+  "passed": [
+    "Home: Featured Collections section wrapper uses py-8 (reduced gap before Featured Rudraksha heading).",
+    "Home: 4 Featured Collection tiles use aspect-[4/3] (verified count=4).",
+    "Header live search: modal opens, typing 'mukhi' shows data-testid=live-results with 5 live-prod-<slug> items; clicking first item routes to /product/5-mukhi-rudraksha-nepal.",
+    "ProductDetail: layout uses grid-cols-[minmax(0,42%)_1fr] on lg (verified in DOM).",
+    "ProductDetail: main product image is aspect-[4/5] (not square).",
+    "ProductDetail: UPI QR present with data-testid=upi-qr as <img> from api.qrserver.com/v1/create-qr-code (fallback QR working).",
+    "ProductDetail: 'Curated across collections' mixed-cards grid renders below 'You may also love'.",
+    "Home 'Voices of Devotees' section: 4 circular avatar images (w-14 h-14 rounded-full object-cover) rendered next to author names + locations.",
+    "Shop: filter sidebar has classes lg:sticky lg:top-28 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto (sidebar stays put).",
+    "Admin /admin/categories: form contains data-testid=cat-image-upload button (URL text input replaced).",
+    "Admin /admin/blogs: form contains data-testid=blog-image-upload button (URL text input replaced).",
+    "Admin /admin/testimonials: form contains data-testid=testi-avatar-upload button; list view shows 4 circular avatar/fallback elements.",
+    "Admin /admin/settings: 'Quick: UPI QR Code Image' card with data-testid=upi-qr-upload button present at top of page."
+  ],
+  "failed": [],
+  "action_items": [
+    "Minor (non-blocking): Admin Login 'Sign In' button lacks type=\"submit\" — Enter key would not submit the form; only clicking works. Consider adding type=\"submit\" for a11y/UX. Does not block current release."
+  ],
+  "success_rate": {"backend": "not tested", "frontend": "100% (13/13 checks)"},
+  "retest_needed": false,
+  "full_testing_deferred": true
+}

@@ -18,18 +18,36 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  const [live, setLive] = useState({ products: [], blogs: [] });
   const ann = settings.announcement;
   const site = settings.site || {};
   const contact = settings.contact || {};
   const social = settings.social || {};
 
+  React.useEffect(() => {
+    if (!showSearch) return;
+    const t = q.trim();
+    if (!t) { setLive({ products: [], blogs: [] }); return; }
+    let ignore = false;
+    const timer = setTimeout(async () => {
+      const { supabase } = await import("@/lib/supabase");
+      const [{ data: p }, { data: b }] = await Promise.all([
+        supabase.from("products").select("slug,name,mukhi,images,selling_price").or(`name.ilike.%${t}%,description.ilike.%${t}%,mukhi.ilike.%${t}%`).limit(5),
+        supabase.from("blog_posts").select("slug,title,excerpt").eq("status","published").or(`title.ilike.%${t}%,excerpt.ilike.%${t}%`).limit(3),
+      ]);
+      if (!ignore) setLive({ products: p || [], blogs: b || [] });
+    }, 220);
+    return () => { ignore = true; clearTimeout(timer); };
+  }, [q, showSearch]);
+
   const submit = (e) => {
     e.preventDefault();
     if (q.trim()) {
       nav(`/search?q=${encodeURIComponent(q.trim())}`);
-      setShowSearch(false);
+      setShowSearch(false); setQ("");
     }
   };
+  const goto = (path) => { nav(path); setShowSearch(false); setQ(""); };
 
   return (
     <>
@@ -102,9 +120,9 @@ export default function Header() {
       </header>
 
       {showSearch && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-32" style={{ background: "rgba(44,30,22,0.6)" }} onClick={() => setShowSearch(false)}>
-          <form onClick={(e) => e.stopPropagation()} onSubmit={submit} className="bg-white rounded-md w-full max-w-2xl mx-4 p-3 shadow-xl">
-            <div className="flex items-center gap-3 px-2">
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-24" style={{ background: "rgba(44,30,22,0.6)" }} onClick={() => setShowSearch(false)}>
+          <form onClick={(e) => e.stopPropagation()} onSubmit={submit} className="bg-white rounded-md w-full max-w-2xl mx-4 shadow-xl overflow-hidden">
+            <div className="flex items-center gap-3 px-4 border-b" style={{borderColor:"var(--line)"}}>
               <Search size={20} className="text-[var(--copper)]" />
               <input
                 data-testid="global-search-input"
@@ -116,6 +134,33 @@ export default function Header() {
               />
               <button data-testid="close-search-btn" type="button" onClick={() => setShowSearch(false)} className="p-2 text-[var(--ink-2)]"><X size={18}/></button>
             </div>
+            {q.trim() && (
+              <div className="max-h-[60vh] overflow-y-auto" data-testid="live-results">
+                {live.products.length === 0 && live.blogs.length === 0 && <div className="p-6 text-sm text-center" style={{color:"var(--ink-2)"}}>Searching…</div>}
+                {live.products.length > 0 && (
+                  <div className="p-3">
+                    <div className="overline px-2 mb-1">Products</div>
+                    {live.products.map(p => (
+                      <button type="button" key={p.slug} onClick={()=>goto(`/product/${p.slug}`)} className="w-full flex items-center gap-3 p-2 hover:bg-[var(--cream)] rounded-md text-left" data-testid={`live-prod-${p.slug}`}>
+                        <img src={(p.images?.[0]?.url) || "https://images.unsplash.com/photo-1613274146063-8930e164c743?w=200"} className="w-10 h-10 rounded-md object-cover" alt=""/>
+                        <div className="flex-1"><div className="text-sm" style={{color:"var(--ink)"}}>{p.name}</div><div className="text-xs" style={{color:"var(--ink-2)"}}>{p.mukhi} · ₹{p.selling_price}</div></div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {live.blogs.length > 0 && (
+                  <div className="p-3 border-t" style={{borderColor:"var(--line)"}}>
+                    <div className="overline px-2 mb-1">Journal</div>
+                    {live.blogs.map(b => (
+                      <button type="button" key={b.slug} onClick={()=>goto(`/journal/${b.slug}`)} className="w-full block p-2 hover:bg-[var(--cream)] rounded-md text-left">
+                        <div className="text-sm" style={{color:"var(--ink)"}}>{b.title}</div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <button type="submit" className="w-full py-3 text-xs uppercase tracking-widest border-t" style={{borderColor:"var(--line)", color:"var(--copper)"}}>See all results →</button>
+              </div>
+            )}
           </form>
         </div>
       )}

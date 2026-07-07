@@ -11,6 +11,7 @@ export default function ProductDetail() {
   const { settings } = useSite();
   const [p, setP] = useState(null);
   const [rel, setRel] = useState([]);
+  const [mix, setMix] = useState([]);
   const [activeImg, setActiveImg] = useState(0);
   const [copied, setCopied] = useState(false);
 
@@ -22,6 +23,12 @@ export default function ProductDetail() {
         const { data: rl } = await supabase.from("products").select("*").eq("category_id", data.category_id).neq("id", data.id).limit(4);
         setRel(rl || []);
       }
+      const { data: mx } = await supabase.from("products").select("*").neq("slug", slug).limit(20);
+      // shuffle & take 4 across categories
+      const byCat = {};
+      (mx || []).forEach(pr => { const k = pr.category_id || "_"; (byCat[k] = byCat[k] || []).push(pr); });
+      const picks = Object.values(byCat).map(arr => arr[Math.floor(Math.random()*arr.length)]).slice(0,4);
+      setMix(picks);
       window.scrollTo(0, 0);
       setActiveImg(0);
     })();
@@ -46,10 +53,10 @@ export default function ProductDetail() {
         <span>{p.name}</span>
       </nav>
 
-      <div className="grid lg:grid-cols-2 gap-12">
+      <div className="grid lg:grid-cols-[minmax(0,42%)_1fr] gap-12 items-start">
         {/* Gallery */}
         <div>
-          <div className="rounded-md overflow-hidden aspect-square" style={{ background: "var(--cream)" }}>
+          <div className="rounded-md overflow-hidden aspect-[4/5] max-w-md mx-auto lg:max-w-none" style={{ background: "var(--cream)" }}>
             <img data-testid="pd-main-image" src={imgs[activeImg]?.url} alt={p.name} className="w-full h-full object-cover"/>
           </div>
           {imgs.length > 1 && (
@@ -96,13 +103,24 @@ export default function ProductDetail() {
           {c.upi && (
             <div className="mt-6 p-5 rounded-md border" style={{ borderColor: "var(--line)", background: "var(--cream)" }}>
               <div className="overline mb-2">UPI Payment</div>
-              <div className="flex items-center justify-between gap-3">
-                <div className="font-mono text-sm" style={{ color: "var(--ink)" }} data-testid="upi-id">{c.upi}</div>
-                <button onClick={copyUpi} data-testid="copy-upi" className="text-xs inline-flex items-center gap-1 px-3 py-1.5 rounded-sm border bg-white" style={{ borderColor: "var(--line)" }}>
-                  {copied ? <><Check size={14}/> Copied</> : <><Copy size={14}/> Copy</>}
-                </button>
+              <div className="flex items-start gap-4">
+                <div className="flex-1">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="font-mono text-sm" style={{ color: "var(--ink)" }} data-testid="upi-id">{c.upi}</div>
+                    <button onClick={copyUpi} data-testid="copy-upi" className="text-xs inline-flex items-center gap-1 px-3 py-1.5 rounded-sm border bg-white" style={{ borderColor: "var(--line)" }}>
+                      {copied ? <><Check size={14}/> Copied</> : <><Copy size={14}/> Copy</>}
+                    </button>
+                  </div>
+                  <p className="text-xs mt-2" style={{ color: "var(--ink-2)" }}>Pay via any UPI app, then share the transaction ID on WhatsApp for confirmation.</p>
+                </div>
+                <img
+                  data-testid="upi-qr"
+                  src={c.upi_qr || `https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=8&data=${encodeURIComponent(`upi://pay?pa=${c.upi}&pn=MV%20Rudraksh&am=${p.selling_price}&cu=INR&tn=${encodeURIComponent(p.name)}`)}`}
+                  alt="UPI QR Code"
+                  className="w-24 h-24 rounded-md bg-white p-1 border"
+                  style={{borderColor:"var(--line)"}}
+                />
               </div>
-              <p className="text-xs mt-2" style={{ color: "var(--ink-2)" }}>Pay via any UPI app, then share the transaction ID on WhatsApp for confirmation.</p>
             </div>
           )}
 
@@ -128,8 +146,19 @@ export default function ProductDetail() {
       {rel.length > 0 && (
         <div className="mt-20">
           <h2 className="font-serif-display text-3xl mb-8" style={{ color: "var(--ink)" }}>You may also love</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {rel.map(r => <ProductCard key={r.id} p={r} />)}
+          </div>
+        </div>
+      )}
+
+      {/* Mixed picks across categories */}
+      {mix.length > 0 && (
+        <div className="mt-16">
+          <div className="overline">Explore More</div>
+          <h2 className="font-serif-display text-3xl mt-2 mb-8" style={{ color: "var(--ink)" }}>Curated across collections</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {mix.map(r => <ProductCard key={r.id} p={r} />)}
           </div>
         </div>
       )}

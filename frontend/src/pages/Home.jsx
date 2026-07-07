@@ -52,9 +52,9 @@ export default function Home() {
 
       {/* Categories bento */}
       <Section title="Featured Collections" overline="Curated" >
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
           {cats.slice(0,4).map((c, i) => (
-            <Link key={c.id} to={`/shop?category=${c.slug}`} data-testid={`cat-${c.slug}`} className="group relative overflow-hidden rounded-md aspect-[3/2]">
+            <Link key={c.id} to={`/shop?category=${c.slug}`} data-testid={`cat-${c.slug}`} className="group relative overflow-hidden rounded-md aspect-[4/3]">
               <img src={c.image_url} alt={c.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,rgba(0,0,0,0),rgba(44,30,22,0.7))" }} />
               <div className="absolute bottom-0 left-0 p-6">
@@ -111,10 +111,20 @@ export default function Home() {
           <h2 className="font-serif-display text-4xl sm:text-5xl mt-4">Trusted by 10,000+ seekers</h2>
           <div className="grid md:grid-cols-2 gap-8 mt-16">
             {testis.map((t) => (
-              <div key={t.id} className="p-8 rounded-md" style={{ background: "rgba(253,251,247,0.05)", border: "1px solid rgba(253,251,247,0.1)" }}>
-                <div className="flex justify-center gap-1 mb-4">{Array.from({length:t.rating||5}).map((_,i)=><Star key={i} size={14} fill="#D4AF37" stroke="#D4AF37"/>)}</div>
-                <p className="italic font-serif-display text-xl leading-relaxed">"{t.content}"</p>
-                <div className="mt-6 text-xs uppercase tracking-widest" style={{ color: "var(--gold)" }}>{t.author_name} · {t.location}</div>
+              <div key={t.id} className="p-8 rounded-md text-left" style={{ background: "rgba(253,251,247,0.05)", border: "1px solid rgba(253,251,247,0.1)" }}>
+                <div className="flex items-center gap-4 mb-4">
+                  {t.avatar_url ? (
+                    <img src={t.avatar_url} alt={t.author_name} className="w-14 h-14 rounded-full object-cover" style={{border:"2px solid var(--gold)"}}/>
+                  ) : (
+                    <div className="w-14 h-14 rounded-full flex items-center justify-center font-serif-display text-xl" style={{background:"var(--copper)", color:"white"}}>{(t.author_name||"?").charAt(0)}</div>
+                  )}
+                  <div>
+                    <div className="font-serif-display text-lg" style={{color:"var(--ivory)"}}>{t.author_name}</div>
+                    <div className="text-xs uppercase tracking-widest" style={{color:"var(--gold)"}}>{t.location}</div>
+                  </div>
+                </div>
+                <div className="flex gap-1 mb-3">{Array.from({length:t.rating||5}).map((_,i)=><Star key={i} size={12} fill="#D4AF37" stroke="#D4AF37"/>)}</div>
+                <p className="italic font-serif-display text-lg leading-relaxed">"{t.content}"</p>
               </div>
             ))}
           </div>
@@ -157,7 +167,7 @@ export default function Home() {
 
 function Section({ title, overline, children }) {
   return (
-    <section className="py-14">
+    <section className="py-8">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <div className="flex items-end justify-between mb-8 gap-6 flex-wrap">
           <div>

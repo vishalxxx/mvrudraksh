@@ -88,7 +88,7 @@ export default function Shop() {
       <div className="lg:grid lg:grid-cols-[280px_1fr] gap-10">
         {/* Sidebar */}
         <aside className={`${openFilter ? "block" : "hidden"} lg:block`}>
-          <div className="lg:sticky lg:top-28 space-y-8" data-testid="shop-filters">
+          <div className="lg:sticky lg:top-28 space-y-6 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-2" data-testid="shop-filters">
             <FilterBlock title="Category">
               {cats.map(c => (
                 <FilterOption key={c.id} label={c.name} checked={selectedCategory===c.slug} onChange={()=>setP("category", selectedCategory===c.slug ? "" : c.slug)} testid={`filter-cat-${c.slug}`}/>

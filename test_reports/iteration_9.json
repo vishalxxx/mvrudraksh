@@ -1,0 +1,20 @@
+{
+  "summary": "Regression smoke test after adding Vercel build-config files (/app/frontend/.npmrc and /app/frontend/vercel.json). Verified files exist with correct contents; confirmed local app still renders home, shop, and admin login without new runtime errors. Vercel deploy itself cannot be validated from this environment - final validation requires user redeploy on Vercel.",
+  "tested_scope": ["frontend", "integration"],
+  "passed": [
+    "/app/frontend/.npmrc exists and contains exactly 'legacy-peer-deps=true'",
+    "/app/frontend/vercel.json exists with framework='create-react-app', buildCommand='yarn build', installCommand='yarn install --ignore-engines', outputDirectory='build'",
+    "Home page (/) loads with hero 'Sacred Beads. Certified Purity.', nav (HOME/SHOP/CATEGORIES/JOURNAL/ABOUT/CONTACT), CTAs (Explore Collection, Read the Journal), announcement bar",
+    "Shop page (/shop) loads with 6 products, filters (Collection, Product Category, Mukhi), sort dropdown",
+    "Admin login (/admin/login) loads with email/password fields and Sign In button",
+    "No new console errors introduced by build-config file additions"
+  ],
+  "failed": [],
+  "action_items": [
+    "User to redeploy on Vercel to confirm the ERESOLVE peer-dep conflict is resolved by legacy-peer-deps=true + yarn install override"
+  ],
+  "success_rate": {"backend": "N/A (not tested - frontend only per request)", "frontend": "100%"},
+  "retest_needed": false,
+  "full_testing_deferred": true,
+  "notes": "Only pre-existing benign console warning observed (empty string passed to img src attribute) - unrelated to this change. .npmrc and vercel.json are build-time-only configs and do not affect local runtime, as expected."
+}

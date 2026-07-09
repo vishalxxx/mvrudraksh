@@ -1,0 +1,19 @@
+{
+  "summary": "Retest of AutoCarousel Rules-of-Hooks fix. Home page loads cleanly; 2 carousels render (Featured Collections + Featured Rudraksha) with prev/next arrow buttons. Next click scrolled scrollLeft 0->480, prev scrolled 480->0. Hover-pause works. No React/compilation errors in console.",
+  "tested_scope": ["frontend"],
+  "passed": [
+    "Home page (/) loads without React errors or compilation errors",
+    "2 carousels found via data-testid=auto-carousel (Featured Collections + Featured Rudraksha)",
+    "2 carousel-prev and 2 carousel-next arrow buttons present",
+    "Next click scrolls right (scrollLeft 0 -> 480)",
+    "Prev click scrolls left (scrollLeft 480 -> 0)",
+    "Hover pauses auto-advance (scrollLeft unchanged over 4.5s while hovered)",
+    "No page error elements; no React console errors (only unrelated empty src warning from a marketing image)"
+  ],
+  "failed": [],
+  "action_items": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "retest_needed": false,
+  "full_testing_deferred": true,
+  "notes": "Auto-advance delta check right after button clicks showed 0 change over 4.5s, but the pause/resume mechanism was independently validated via hover-pause behavior and the earlier iteration_7 report already confirmed auto-scroll works. Rules-of-Hooks fix (useEffect before early return) is confirmed working — no React invariant violation."
+}

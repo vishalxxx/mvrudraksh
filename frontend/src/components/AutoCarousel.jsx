@@ -9,9 +9,9 @@ export default function AutoCarousel({ children, itemClass = "w-72", gap = "gap-
   const scrollerRef = useRef(null);
   const pausedRef = useRef(false);
   const items = React.Children.toArray(children);
-  if (items.length === 0) return null;
 
   useEffect(() => {
+    if (items.length === 0) return;
     const el = scrollerRef.current; if (!el) return;
     const tick = () => {
       if (pausedRef.current || !el) return;
@@ -23,7 +23,9 @@ export default function AutoCarousel({ children, itemClass = "w-72", gap = "gap-
     };
     const t = setInterval(tick, interval);
     return () => clearInterval(t);
-  }, [interval]);
+  }, [interval, items.length]);
+
+  if (items.length === 0) return null;
 
   const step = (dir) => {
     const el = scrollerRef.current; if (!el) return;

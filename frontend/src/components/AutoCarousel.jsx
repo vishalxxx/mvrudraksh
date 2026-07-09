@@ -1,29 +1,25 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-/**
- * AutoCarousel — horizontally scrollable strip with auto-advance + manual arrow controls.
- * Uses native scroll for smooth touch on mobile. Auto scrolls every `interval` ms.
- */
 export default function AutoCarousel({ children, itemClass = "w-72", gap = "gap-5", interval = 3500 }) {
   const scrollerRef = useRef(null);
-  const pausedRef = useRef(false);
+  const [paused, setPaused] = useState(false);
   const items = React.Children.toArray(children);
 
   useEffect(() => {
-    if (items.length === 0) return;
-    const el = scrollerRef.current; if (!el) return;
-    const tick = () => {
-      if (pausedRef.current || !el) return;
+    if (items.length === 0 || paused) return;
+    const id = setInterval(() => {
+      const el = scrollerRef.current; if (!el) return;
       const maxScroll = el.scrollWidth - el.clientWidth;
       const step = el.clientWidth * 0.45;
-      const next = el.scrollLeft + step;
-      if (next >= maxScroll - 2) el.scrollTo({ left: 0, behavior: "smooth" });
-      else el.scrollBy({ left: step, behavior: "smooth" });
-    };
-    const t = setInterval(tick, interval);
-    return () => clearInterval(t);
-  }, [interval, items.length]);
+      if (el.scrollLeft + step >= maxScroll - 2) {
+        el.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        el.scrollBy({ left: step, behavior: "smooth" });
+      }
+    }, interval);
+    return () => clearInterval(id);
+  }, [interval, items.length, paused]);
 
   if (items.length === 0) return null;
 
@@ -34,9 +30,9 @@ export default function AutoCarousel({ children, itemClass = "w-72", gap = "gap-
 
   return (
     <div
-      className="relative"
-      onMouseEnter={() => (pausedRef.current = true)}
-      onMouseLeave={() => (pausedRef.current = false)}
+      className="relative px-0 sm:px-12"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
       data-testid="auto-carousel"
     >
       <div
@@ -53,7 +49,7 @@ export default function AutoCarousel({ children, itemClass = "w-72", gap = "gap-
         aria-label="Previous"
         data-testid="carousel-prev"
         onClick={() => step(-1)}
-        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 w-10 h-10 rounded-full bg-white/95 shadow-md border flex items-center justify-center hover:bg-white transition"
+        className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg border items-center justify-center hover:bg-[var(--cream)] transition z-10"
         style={{ borderColor: "var(--line)", color: "var(--ink)" }}
       >
         <ChevronLeft size={18}/>
@@ -63,7 +59,7 @@ export default function AutoCarousel({ children, itemClass = "w-72", gap = "gap-
         aria-label="Next"
         data-testid="carousel-next"
         onClick={() => step(1)}
-        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 w-10 h-10 rounded-full bg-white/95 shadow-md border flex items-center justify-center hover:bg-white transition"
+        className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg border items-center justify-center hover:bg-[var(--cream)] transition z-10"
         style={{ borderColor: "var(--line)", color: "var(--ink)" }}
       >
         <ChevronRight size={18}/>

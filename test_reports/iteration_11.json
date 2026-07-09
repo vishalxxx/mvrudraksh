@@ -1,0 +1,20 @@
+{
+  "summary": "Verified AutoCarousel rewrite: pure CSS marquee, no arrow buttons, smooth continuous auto-scroll, hover pause works. Two carousels render on home with correct inline animation-duration (35s collections, 50s products).",
+  "tested_scope": ["frontend"],
+  "passed": [
+    "Home renders 2 [data-testid=auto-carousel] elements (Featured Collections + Featured Rudraksha)",
+    "Zero [data-testid=carousel-prev] and zero [data-testid=carousel-next] elements on page",
+    "Both tracks have class .mv-marquee-track with inline animationDuration set (35s and 50s) matching Home.jsx speed props",
+    "Continuous auto-scroll: computed transform translateX decreased from -111.05px to -208.42px over 2s (moved ~48px/s at 35s duration — consistent with linear marquee)",
+    "Hover pause: getAnimations()[0].playState === 'paused' and computed animationPlayState === 'paused' when hovering the carousel; transform stays frozen while hovered (verified identical over 1.5s)",
+    "Mouse leave resumes animation (playState === 'running')",
+    "10 category tiles [data-testid^=cat-] present and remain clickable",
+    "No JS console errors (only two React 'empty src attribute' warnings — pre-existing, unrelated to carousel)"
+  ],
+  "failed": [],
+  "action_items": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "retest_needed": false,
+  "full_testing_deferred": true,
+  "notes": "Pre-existing warnings about empty src attributes on <img> elements observed — not related to this change; flagging for future cleanup."
+}

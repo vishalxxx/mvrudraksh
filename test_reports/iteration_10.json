@@ -1,0 +1,20 @@
+{
+  "summary": "Frontend regression after date-fns 4.1.0 -> 3.6.0 downgrade to resolve react-day-picker@8.10.1 peer dep. Verified file changes and ran regression across / , /shop, /admin/login. No date-fns/react-day-picker related console errors detected on any page.",
+  "tested_scope": ["frontend"],
+  "passed": [
+    "package.json pinned to date-fns 3.6.0 and react-day-picker 8.10.1",
+    "/app/frontend/.npmrc removed (file does not exist)",
+    "/app/frontend/vercel.json exists with framework=create-react-app, buildCommand=yarn build, installCommand=yarn install --ignore-engines",
+    "Home page (/) loads: nav (HOME/SHOP/CATEGORIES/JOURNAL/ABOUT/CONTACT), hero 'Sacred Beads. Certified Purity.', CTA buttons rendered",
+    "/shop loads: 'Shop Rudraksha' heading, filters (Collection, Product Category, Mukhi) and 6-product grid render",
+    "/admin/login loads: MV Rudraksh ADMIN CMS card with Email + Password inputs and Sign In button",
+    "Zero date-fns / react-day-picker console errors across all three pages",
+    "No pageerrors on any tested route"
+  ],
+  "failed": [],
+  "action_items": [],
+  "success_rate": {"backend": "not tested", "frontend": "100%"},
+  "retest_needed": false,
+  "full_testing_deferred": true,
+  "notes": "One benign React warning on home page about an empty string attribute (unrelated to dep change). date-fns v3 API is compatible with react-day-picker v8 usage. Shadcn calendar.jsx is not used in any tested user flow but its dep chain resolves cleanly."
+}

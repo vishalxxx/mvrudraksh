@@ -1,0 +1,19 @@
+{
+  "summary": "Home page fails to render due to React Rules of Hooks violation in AutoCarousel.jsx. Early return `if (items.length === 0) return null;` (line 12) is placed BEFORE `useEffect` (line 14). ESLint compile error blocks the app; runtime shows 'Rendered more hooks than during the previous render'. No carousels found on page. Unable to test arrow controls, auto-scroll, or hover pause.",
+  "tested_scope": ["frontend"],
+  "passed": [],
+  "failed": [
+    {
+      "area": "AutoCarousel component",
+      "issue": "React Hook 'useEffect' is called conditionally after `if (items.length === 0) return null;`. Violates react-hooks/rules-of-hooks. Causes 'Compiled with problems' ESLint error and pageerror: 'Rendered more hooks than during the previous render.' Home page shows compile-error overlay and 0 carousels render.",
+      "evidence": "src/components/AutoCarousel.jsx:14:3 — useEffect is called after early return on line 12. Screenshot shows compile overlay. query_selector_all('[data-testid=\"auto-carousel\"]') returned 0.",
+      "priority": "HIGH"
+    }
+  ],
+  "action_items": [
+    "In /app/frontend/src/components/AutoCarousel.jsx, move the `if (items.length === 0) return null;` check to AFTER the `useEffect` (and after any other hooks). Hooks must always be called in the same order on every render — no early returns before them. E.g., compute `const items = React.Children.toArray(children);`, then call `useRef`/`useRef`/`useEffect`, and only then do the empty-items early return."
+  ],
+  "success_rate": {"backend": "n/a", "frontend": "0%"},
+  "retest_needed": true,
+  "full_testing_deferred": true
+}

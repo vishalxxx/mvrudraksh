@@ -1,10 +1,12 @@
 import React from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/lib/auth";
-import { SiteProvider } from "@/lib/site";
+import { SiteProvider, useSite } from "@/lib/site";
 import PublicLayout from "@/components/layout/PublicLayout";
 import ScrollToTop from "@/components/ScrollToTop";
+import Seo, { orgSchema, websiteSchema } from "@/components/Seo";
 import Home from "@/pages/Home";
 import Shop from "@/pages/Shop";
 import ProductDetail from "@/pages/ProductDetail";
@@ -16,14 +18,21 @@ import { Dashboard, AdminProducts, AdminCategories, AdminBlogs, AdminTestimonial
 
 const wrap = (el) => <PublicLayout>{el}</PublicLayout>;
 
+function GlobalSeo() {
+  const { settings } = useSite();
+  return <Seo jsonLd={[orgSchema(settings), websiteSchema(settings)]} />;
+}
+
 function App() {
   return (
     <div className="App">
-      <AuthProvider>
-        <SiteProvider>
-          <BrowserRouter>
-            <ScrollToTop />
-            <Routes>
+      <HelmetProvider>
+        <AuthProvider>
+          <SiteProvider>
+            <BrowserRouter>
+              <ScrollToTop />
+              <GlobalSeo />
+              <Routes>
               <Route path="/" element={wrap(<Home />)} />
               <Route path="/shop" element={wrap(<Shop />)} />
               <Route path="/product/:slug" element={wrap(<ProductDetail />)} />
@@ -56,6 +65,7 @@ function App() {
           </BrowserRouter>
         </SiteProvider>
       </AuthProvider>
+      </HelmetProvider>
     </div>
   );
 }

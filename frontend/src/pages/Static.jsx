@@ -4,10 +4,18 @@ import { supabase } from "@/lib/supabase";
 import { useSite } from "@/lib/site";
 import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
+import Seo, { breadcrumbSchema, faqSchema } from "@/components/Seo";
+import { notifyInquiry } from "@/lib/notifyInquiry";
 
 export function About() {
   return (
     <div className="max-w-4xl mx-auto px-6 py-20">
+      <Seo
+        title="About MV Rudraksh · A Legacy of Purity"
+        description="MV Rudraksh sources certified, energised Rudraksha directly from Nepal and Java. Every bead is X-ray tested, lab certified, and ritually consecrated before dispatch."
+        path="/about"
+        jsonLd={breadcrumbSchema([{name:"Home",path:"/"},{name:"About",path:"/about"}])}
+      />
       <div className="text-center mb-10">
         <div className="overline">About</div>
         <h1 className="font-serif-display text-5xl mt-3" style={{ color: "var(--ink)" }}>MV Rudraksh — A Legacy of Purity</h1>
@@ -37,11 +45,21 @@ export function Contact() {
     e.preventDefault();
     setErr("");
     const { error } = await supabase.from("inquiries").insert({ ...form, type: "contact" });
-    if (error) setErr(error.message); else { setSent(true); setForm({name:"",email:"",phone:"",message:""}); }
+    if (error) { setErr(error.message); return; }
+    // Fire-and-forget email notification (only works on Vercel where /api/notify-inquiry exists).
+    notifyInquiry({ ...form, type: "contact" });
+    setSent(true);
+    setForm({name:"",email:"",phone:"",message:""});
   };
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-20">
+      <Seo
+        title="Contact MV Rudraksh"
+        description="Speak to our acharyas about the right Rudraksha for you. Reach us via WhatsApp, phone, email, or send an inquiry — we respond within a day."
+        path="/contact"
+        jsonLd={breadcrumbSchema([{name:"Home",path:"/"},{name:"Contact",path:"/contact"}])}
+      />
       <div className="text-center mb-14">
         <div className="overline">Reach Us</div>
         <h1 className="font-serif-display text-5xl mt-3" style={{ color: "var(--ink)" }}>Contact MV Rudraksh</h1>
@@ -82,6 +100,12 @@ export function FAQ() {
   ];
   return (
     <div className="max-w-3xl mx-auto px-6 py-20">
+      <Seo
+        title="Rudraksha FAQ · Certification, Shipping, Payment"
+        description="Answers to the most common Rudraksha questions — certification, choosing the right Mukhi, worldwide shipping, returns, and payment via UPI/WhatsApp."
+        path="/faq"
+        jsonLd={[faqSchema(items), breadcrumbSchema([{name:"Home",path:"/"},{name:"FAQ",path:"/faq"}])]}
+      />
       <div className="text-center mb-10">
         <div className="overline">Frequently Asked</div>
         <h1 className="font-serif-display text-5xl mt-3" style={{ color: "var(--ink)" }}>FAQ</h1>
@@ -98,9 +122,10 @@ export function FAQ() {
   );
 }
 
-function PolicyPage({ title, children }) {
+function PolicyPage({ title, path, description, children }) {
   return (
     <div className="max-w-3xl mx-auto px-6 py-20">
+      <Seo title={title} description={description} path={path} jsonLd={breadcrumbSchema([{name:"Home",path:"/"},{name:title,path}])} />
       <div className="text-center mb-10">
         <div className="overline">Legal</div>
         <h1 className="font-serif-display text-5xl mt-3" style={{ color: "var(--ink)" }}>{title}</h1>
@@ -111,20 +136,26 @@ function PolicyPage({ title, children }) {
 }
 
 export const Privacy = () => (
-  <PolicyPage title="Privacy Policy">
+  <PolicyPage title="Privacy Policy" path="/privacy" description="How MV Rudraksh collects, uses, and protects your personal information.">
     <p>MV Rudraksh respects your privacy. We collect only the information necessary to process your inquiry and provide our services.</p>
     <h2>Information We Collect</h2><p>Name, email, phone number, and delivery address when you contact or purchase.</p>
     <h2>How We Use It</h2><p>Only to fulfil orders, share updates, and improve your experience — never sold to third parties.</p>
   </PolicyPage>
 );
 export const Terms = () => (
-  <PolicyPage title="Terms & Conditions"><p>By using our website you agree to these terms. All products are sold on an as-is basis with the guarantees stated on the product page.</p></PolicyPage>
+  <PolicyPage title="Terms & Conditions" path="/terms" description="MV Rudraksh terms of service — product warranty, dispute resolution, and site usage.">
+    <p>By using our website you agree to these terms. All products are sold on an as-is basis with the guarantees stated on the product page.</p>
+  </PolicyPage>
 );
 export const Shipping = () => (
-  <PolicyPage title="Shipping Policy"><p>We ship within 24-48 hours across India. International shipping timelines vary.</p></PolicyPage>
+  <PolicyPage title="Shipping Policy" path="/shipping" description="Domestic and international shipping timelines for MV Rudraksh orders.">
+    <p>We ship within 24-48 hours across India. International shipping timelines vary.</p>
+  </PolicyPage>
 );
 export const Returns = () => (
-  <PolicyPage title="Return Policy"><p>7-day returns for unused, unopened products. Contact us on WhatsApp to initiate a return.</p></PolicyPage>
+  <PolicyPage title="Return Policy" path="/returns" description="7-day return window for unused, unopened Rudraksha products.">
+    <p>7-day returns for unused, unopened products. Contact us on WhatsApp to initiate a return.</p>
+  </PolicyPage>
 );
 
 export function Sitemap() {
@@ -138,6 +169,7 @@ export function Sitemap() {
   }, []);
   return (
     <div className="max-w-4xl mx-auto px-6 py-20">
+      <Seo title="Sitemap" description="Full sitemap of MV Rudraksh — pages, products, and journal." path="/sitemap"/>
       <h1 className="font-serif-display text-4xl mb-8" style={{color:"var(--ink)"}}>Sitemap</h1>
       <div className="grid md:grid-cols-3 gap-8 text-sm" style={{color:"var(--ink-2)"}}>
         <div><div className="overline mb-3">Pages</div>{["/","/shop","/about","/contact","/faq","/journal"].map(p=><div key={p}><Link className="hover:text-[var(--copper)]" to={p}>{p}</Link></div>)}</div>
@@ -160,6 +192,7 @@ export function SearchPage() {
   }, [q]);
   return (
     <div className="max-w-6xl mx-auto px-6 py-16">
+      <Seo title={q ? `Search: ${q}` : "Search"} description={`Search results for "${q}" on MV Rudraksh — Rudraksha products and journal articles.`} path="/search" noindex/>
       <div className="overline">Search results for</div>
       <h1 className="font-serif-display text-4xl mt-2" style={{color:"var(--ink)"}}>"{q}"</h1>
       <h2 className="font-serif-display text-2xl mt-10 mb-4" style={{color:"var(--ink)"}}>Products ({prods.length})</h2>

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /root-access-mvr
+Disallow: /root-access-mvr/*
+Disallow: /api/
+
+Sitemap: https://mvrudraksh.com/sitemap.xml

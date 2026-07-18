@@ -5,6 +5,7 @@ import { useSite } from "@/lib/site";
 import { money, productImage } from "@/lib/utils.helpers";
 import { MessageCircle, Phone, ChevronRight, Copy, Check } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
+import Seo, { productSchema, breadcrumbSchema } from "@/components/Seo";
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -47,6 +48,23 @@ export default function ProductDetail() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 lg:px-10 py-10">
+      <Seo
+        title={p.seo_title || (p.mukhi && !new RegExp(`\\b${p.mukhi}\\b.*mukhi`, "i").test(p.name) ? `${p.name} · ${p.mukhi} Mukhi` : p.name)}
+        description={p.seo_description || p.short_description || p.description}
+        path={`/product/${p.slug}`}
+        type="product"
+        image={imgs[0]?.url}
+        keywords={[p.name, p.mukhi && `${p.mukhi} Mukhi`, p.origin, p.categories?.name, ...(Array.isArray(p.tags) ? p.tags : [])].filter(Boolean).join(", ")}
+        jsonLd={[
+          productSchema(p, settings),
+          breadcrumbSchema([
+            {name:"Home",path:"/"},
+            {name:"Shop",path:"/shop"},
+            ...(p.categories?.slug ? [{name:p.categories.name, path:`/shop?category=${p.categories.slug}`}] : []),
+            {name:p.name, path:`/product/${p.slug}`},
+          ]),
+        ]}
+      />
       <nav className="text-xs mb-8" style={{ color: "var(--ink-2)" }}>
         <Link to="/" className="hover:text-[var(--copper)]">Home</Link> <ChevronRight size={12} className="inline mx-1"/>
         <Link to="/shop" className="hover:text-[var(--copper)]">Shop</Link> <ChevronRight size={12} className="inline mx-1"/>

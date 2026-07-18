@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import ProductCard from "@/components/ProductCard";
 import { SlidersHorizontal, X } from "lucide-react";
+import Seo, { breadcrumbSchema } from "@/components/Seo";
 
 const SORTS = [
   { v: "newest", l: "Newest" },
@@ -84,6 +85,14 @@ export default function Shop() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16">
+      <Seo
+        title={selectedCategory ? `${cats.find(c=>c.slug===selectedCategory)?.name || "Rudraksha"} — Shop` : "Shop Authentic Rudraksha · Nepal & Java Beads"}
+        description={selectedCategory
+          ? `Browse our curated collection of ${cats.find(c=>c.slug===selectedCategory)?.name || "Rudraksha"} — certified, energised beads sourced directly from Nepal and Java.`
+          : "Shop 1-Mukhi to 21-Mukhi Rudraksha, malas, and bracelets. Certified, energised, and shipped worldwide. Advanced filters by Mukhi, origin, price, and purpose."}
+        path={selectedCategory ? `/shop?category=${selectedCategory}` : "/shop"}
+        jsonLd={breadcrumbSchema([{name:"Home",path:"/"},{name:"Shop",path:"/shop"},...(selectedCategory ? [{name: cats.find(c=>c.slug===selectedCategory)?.name || selectedCategory, path:`/shop?category=${selectedCategory}`}] : [])])}
+      />
       <div className="text-center mb-12">
         <div className="overline">Sacred Catalog</div>
         <h1 className="font-serif-display text-5xl sm:text-6xl mt-3" style={{ color: "var(--ink)" }}>Shop Rudraksha</h1>

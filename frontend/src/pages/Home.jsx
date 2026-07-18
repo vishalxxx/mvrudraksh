@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { useSite } from "@/lib/site";
 import ProductCard from "@/components/ProductCard";
 import AutoCarousel from "@/components/AutoCarousel";
+import Seo from "@/components/Seo";
 
 const ICONS = { BadgeCheck, Sparkles, Mountain, Heart };
 
@@ -33,9 +34,17 @@ export default function Home() {
 
   const hero = settings.hero || {};
   const why = settings.why_us?.items || [];
+  const site = settings.site || {};
 
   return (
     <div>
+      <Seo
+        title={site.name ? `${site.name} — Authentic Rudraksha from Nepal & Java` : undefined}
+        description={site.tagline || "Sacred, certified, energised Rudraksha beads and Mukhi collection. Sourced from Nepal and Java, ritually consecrated, shipped worldwide."}
+        path="/"
+        image={hero.image}
+        keywords="rudraksha, mukhi rudraksha, nepal rudraksha, java rudraksha, spiritual jewellery, certified rudraksha, mv rudraksh"
+      />
       {/* Hero */}
       <section className="relative overflow-hidden" style={{ minHeight: "82vh" }}>
         <img src={hero.background_image || "https://images.pexels.com/photos/37527354/pexels-photo-37527354.jpeg"} alt="Sacred" className="absolute inset-0 w-full h-full object-cover" />

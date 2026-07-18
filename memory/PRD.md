@@ -14,9 +14,13 @@ Build a premium, SEO-optimised, fully dynamic Rudraksha e-commerce/catalog websi
 - Admin / editor (full CMS control — no code, no redeploy)
 
 ## What's Implemented (2026-02-10)
-- Removed "Made with Emergent" badge + emergent-main.js script from `frontend/public/index.html`; updated `<title>` and meta description to MV Rudraksh branded copy
+- Removed "Made with Emergent" badge + emergent-main.js script from `frontend/public/index.html`; updated `<title>` (Helmet-driven) and static meta description now removed so Helmet is the sole source of truth
 - Renamed admin URL from `/admin/*` to `/root-access-mvr/*` (App.js routes, AdminLayout nav LINKS, redirects, password-reset redirect target)
 - Added "Admin Account" section inside Site Settings (`AdminSettings` in AdminPages.jsx) to change signed-in admin's email + password. Password change re-verifies current password via `signInWithPassword` before calling `supabase.auth.updateUser({ password })`.
+- **SEO Boost**: Installed `react-helmet-async` + created `/src/components/Seo.jsx` with reusable `<Seo>` component + schema builders (`orgSchema`, `websiteSchema`, `breadcrumbSchema`, `productSchema`, `articleSchema`, `faqSchema`). App.js wrapped in `HelmetProvider` + global `<GlobalSeo>` emits Organization + WebSite JSON-LD on every page. Per-page `<Seo>` added to Home, Shop (with dynamic category-aware title), ProductDetail (Product schema + breadcrumbs), Categories, Journal, JournalPost (BlogPosting schema), About, Contact, FAQ (FAQPage schema), Privacy/Terms/Shipping/Returns policies, Sitemap, Search (noindex), 404 (noindex). `REACT_APP_SITE_URL` env drives canonical/OG absolute URLs.
+- **Auto Sitemap**: Vercel serverless function at `/app/frontend/api/sitemap.xml.js` — queries Supabase for products, categories, and blog posts on every request, emits standards-compliant `sitemap.xml` with `lastmod`, `changefreq`, and `priority`. `vercel.json` rewrites `/sitemap.xml → /api/sitemap.xml`. `robots.txt` added at `frontend/public/robots.txt` with `Disallow: /root-access-mvr` + sitemap reference.
+- **Inquiry Email Notifications**: Vercel serverless function at `/app/frontend/api/notify-inquiry.js` sends a branded HTML email via Gmail SMTP (nodemailer, port 465) to `NOTIFY_TO` whenever the frontend POSTs a new inquiry. React contact form calls it fire-and-forget after the Supabase insert (`/app/frontend/src/lib/notifyInquiry.js`). Serverless env: `GMAIL_USER=mvrudraksh@gmail.com`, `GMAIL_APP_PASSWORD=uyzmydrfpgvusgvw`, `NOTIFY_TO=mvrudraksh@gmail.com` (values captured in `.env.vercel`).
+- `.env.vercel` template updated with all new server-side env vars (`GMAIL_*`, `NOTIFY_TO`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `PUBLIC_SITE_URL`, `REACT_APP_SITE_URL`).
 
 ## What's Implemented (2026-02-05)
 ### Public site

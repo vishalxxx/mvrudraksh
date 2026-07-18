@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
+import { useSite } from "@/lib/site";
+import Seo, { articleSchema, breadcrumbSchema } from "@/components/Seo";
 
 export function Categories() {
   const [cats, setCats] = useState([]);
   useEffect(() => { supabase.from("categories").select("*").order("sort_order").then(({data}) => setCats(data||[])); }, []);
   return (
     <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16">
+      <Seo
+        title="Rudraksha Categories · Explore Our Sacred Collections"
+        description="Browse curated Rudraksha collections — Mukhi ranges, malas, bracelets, and rare beads. Handpicked, certified, ready to be energised for you."
+        path="/categories"
+        jsonLd={breadcrumbSchema([{name:"Home",path:"/"},{name:"Categories",path:"/categories"}])}
+      />
       <div className="text-center mb-12">
         <div className="overline">Explore</div>
         <h1 className="font-serif-display text-5xl mt-3" style={{ color: "var(--ink)" }}>Categories</h1>
@@ -35,6 +43,12 @@ export function Journal() {
   }, []);
   return (
     <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16">
+      <Seo
+        title="The Journal · Rudraksha Wisdom, Guidance & Stories"
+        description="Deep-dives into Mukhi meanings, wearing rituals, sourcing stories, and the spiritual science behind every Rudraksha bead."
+        path="/journal"
+        jsonLd={breadcrumbSchema([{name:"Home",path:"/"},{name:"Journal",path:"/journal"}])}
+      />
       <div className="text-center mb-16">
         <div className="overline">Wisdom · Guidance · Stories</div>
         <h1 className="font-serif-display text-5xl mt-3" style={{ color: "var(--ink)" }}>The Journal</h1>
@@ -57,11 +71,23 @@ export function Journal() {
 
 export function JournalPost() {
   const { slug } = useParams();
+  const { settings } = useSite();
   const [p, setP] = useState(null);
   useEffect(()=>{ supabase.from("blog_posts").select("*").eq("slug",slug).maybeSingle().then(({data})=>setP(data||null)); }, [slug]);
   if (!p) return <div className="p-24 text-center">Loading…</div>;
   return (
     <article className="max-w-3xl mx-auto px-6 py-16">
+      <Seo
+        title={p.title}
+        description={p.excerpt || p.content}
+        path={`/journal/${p.slug}`}
+        image={p.featured_image}
+        type="article"
+        jsonLd={[
+          articleSchema(p, settings),
+          breadcrumbSchema([{name:"Home",path:"/"},{name:"Journal",path:"/journal"},{name:p.title,path:`/journal/${p.slug}`}]),
+        ]}
+      />
       <div className="overline">{p.category} · {p.reading_time || 5} min read</div>
       <h1 className="font-serif-display text-4xl sm:text-5xl mt-3" style={{ color: "var(--ink)" }}>{p.title}</h1>
       <div className="mt-3 text-sm" style={{ color: "var(--ink-2)" }}>{p.author && `By ${p.author}`}</div>

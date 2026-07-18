@@ -13,7 +13,7 @@ export default function AdminLogin() {
   const [mode, setMode] = useState("login");
   const [msg, setMsg] = useState("");
 
-  if (session) return <Navigate to={loc.state?.from?.pathname || "/admin"} replace />;
+  if (session) return <Navigate to={loc.state?.from?.pathname || "/root-access-mvr"} replace />;
 
   const submit = async (e) => {
     e.preventDefault();
@@ -22,7 +22,7 @@ export default function AdminLogin() {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) setErr(error.message);
     } else {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/admin` });
+      const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/root-access-mvr` });
       if (error) setErr(error.message); else setMsg("Password reset link sent to your email.");
     }
     setBusy(false);

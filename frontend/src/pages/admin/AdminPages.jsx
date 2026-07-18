@@ -388,6 +388,8 @@ export function AdminSettings() {
       <h1 className="font-serif-display text-4xl mb-6" style={{color:"var(--ink)"}}>Site Settings</h1>
       <p className="text-sm mb-6" style={{color:"var(--ink-2)"}}>Edit any section as JSON. All homepage sections, hero, contact, social, and footer are managed here.</p>
 
+      <AdminAccount />
+
       <div className="mb-6 bg-white p-5 rounded-md border" style={{borderColor:"var(--line)"}}>
         <div className="overline mb-2">Quick: UPI QR Code Image</div>
         <p className="text-xs mb-3" style={{color:"var(--ink-2)"}}>Upload a custom UPI QR image. It will show on every product page. If left empty, a dynamic QR is auto-generated from the UPI ID.</p>
@@ -404,6 +406,94 @@ export function AdminSettings() {
             <textarea rows={10} value={drafts[r.key]||""} onChange={(e)=>setDrafts({...drafts,[r.key]:e.target.value})} className="w-full font-mono text-xs p-3 border rounded-md" style={{borderColor:"var(--line)"}} data-testid={`setting-${r.key}`}/>
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+// Admin account: change email + password of the currently signed-in admin user
+function AdminAccount() {
+  const [user, setUser] = useState(null);
+  const [newEmail, setNewEmail] = useState("");
+  const [emailBusy, setEmailBusy] = useState(false);
+  const [emailMsg, setEmailMsg] = useState("");
+  const [emailErr, setEmailErr] = useState("");
+
+  const [currentPwd, setCurrentPwd] = useState("");
+  const [newPwd, setNewPwd] = useState("");
+  const [confirmPwd, setConfirmPwd] = useState("");
+  const [pwdBusy, setPwdBusy] = useState(false);
+  const [pwdMsg, setPwdMsg] = useState("");
+  const [pwdErr, setPwdErr] = useState("");
+
+  useEffect(() => { supabase.auth.getUser().then(({data}) => { setUser(data?.user||null); setNewEmail(data?.user?.email||""); }); }, []);
+
+  const updateEmail = async (e) => {
+    e.preventDefault();
+    setEmailErr(""); setEmailMsg(""); setEmailBusy(true);
+    const trimmed = (newEmail||"").trim().toLowerCase();
+    if (!trimmed || trimmed === user?.email) { setEmailErr("Enter a different email."); setEmailBusy(false); return; }
+    const { error } = await supabase.auth.updateUser({ email: trimmed });
+    setEmailBusy(false);
+    if (error) setEmailErr(error.message);
+    else setEmailMsg("Confirmation link sent. Check the new email inbox to confirm the change.");
+  };
+
+  const updatePassword = async (e) => {
+    e.preventDefault();
+    setPwdErr(""); setPwdMsg(""); setPwdBusy(true);
+    if (!newPwd || newPwd.length < 8) { setPwdErr("New password must be at least 8 characters."); setPwdBusy(false); return; }
+    if (newPwd !== confirmPwd) { setPwdErr("New password and confirmation do not match."); setPwdBusy(false); return; }
+    // Verify current password by reauthenticating
+    const { error: authErr } = await supabase.auth.signInWithPassword({ email: user.email, password: currentPwd });
+    if (authErr) { setPwdErr("Current password is incorrect."); setPwdBusy(false); return; }
+    const { error } = await supabase.auth.updateUser({ password: newPwd });
+    setPwdBusy(false);
+    if (error) setPwdErr(error.message);
+    else {
+      setPwdMsg("Password updated successfully.");
+      setCurrentPwd(""); setNewPwd(""); setConfirmPwd("");
+    }
+  };
+
+  if (!user) return null;
+
+  return (
+    <div className="mb-6 bg-white p-6 rounded-md border" style={{borderColor:"var(--line)"}}>
+      <div className="overline mb-1">Admin Account</div>
+      <div className="text-xs mb-5" style={{color:"var(--ink-2)"}}>Signed in as <b>{user.email}</b>. Update your login credentials below.</div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form onSubmit={updateEmail} className="space-y-3">
+          <div className="font-medium text-sm" style={{color:"var(--ink)"}}>Change Email</div>
+          <label className="block text-sm">
+            <div className="overline mb-1">New Email</div>
+            <input type="email" required value={newEmail} onChange={(e)=>setNewEmail(e.target.value)} className="w-full px-3 py-2 border rounded-md outline-none text-sm" style={{borderColor:"var(--line)"}} data-testid="admin-account-new-email"/>
+          </label>
+          <button disabled={emailBusy} className="btn-primary text-sm" data-testid="admin-account-update-email">{emailBusy ? "Updating…" : "Update Email"}</button>
+          {emailErr && <div className="text-xs text-red-600" data-testid="admin-account-email-err">{emailErr}</div>}
+          {emailMsg && <div className="text-xs" style={{color:"var(--copper)"}} data-testid="admin-account-email-msg">{emailMsg}</div>}
+          <div className="text-[11px]" style={{color:"var(--ink-2)"}}>You'll receive a confirmation email at the new address. The change activates only after you click that link.</div>
+        </form>
+
+        <form onSubmit={updatePassword} className="space-y-3">
+          <div className="font-medium text-sm" style={{color:"var(--ink)"}}>Change Password</div>
+          <label className="block text-sm">
+            <div className="overline mb-1">Current Password</div>
+            <input type="password" required value={currentPwd} onChange={(e)=>setCurrentPwd(e.target.value)} className="w-full px-3 py-2 border rounded-md outline-none text-sm" style={{borderColor:"var(--line)"}} data-testid="admin-account-current-pwd"/>
+          </label>
+          <label className="block text-sm">
+            <div className="overline mb-1">New Password</div>
+            <input type="password" required value={newPwd} onChange={(e)=>setNewPwd(e.target.value)} className="w-full px-3 py-2 border rounded-md outline-none text-sm" style={{borderColor:"var(--line)"}} data-testid="admin-account-new-pwd"/>
+          </label>
+          <label className="block text-sm">
+            <div className="overline mb-1">Confirm New Password</div>
+            <input type="password" required value={confirmPwd} onChange={(e)=>setConfirmPwd(e.target.value)} className="w-full px-3 py-2 border rounded-md outline-none text-sm" style={{borderColor:"var(--line)"}} data-testid="admin-account-confirm-pwd"/>
+          </label>
+          <button disabled={pwdBusy} className="btn-primary text-sm" data-testid="admin-account-update-pwd">{pwdBusy ? "Updating…" : "Update Password"}</button>
+          {pwdErr && <div className="text-xs text-red-600" data-testid="admin-account-pwd-err">{pwdErr}</div>}
+          {pwdMsg && <div className="text-xs" style={{color:"var(--copper)"}} data-testid="admin-account-pwd-msg">{pwdMsg}</div>}
+        </form>
       </div>
     </div>
   );

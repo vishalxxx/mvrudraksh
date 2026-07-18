@@ -4,21 +4,22 @@ import { LayoutDashboard, Package, Layers, FileText, MessageSquare, Settings, Lo
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 
+const ROOT = "/root-access-mvr";
 const LINKS = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, end: true },
-  { to: "/admin/products", label: "Products", icon: Package },
-  { to: "/admin/categories", label: "Categories", icon: Layers },
-  { to: "/admin/blogs", label: "Journal", icon: FileText },
-  { to: "/admin/testimonials", label: "Testimonials", icon: MessageSquare },
-  { to: "/admin/inquiries", label: "Inquiries", icon: Inbox },
-  { to: "/admin/settings", label: "Site Settings", icon: Settings },
+  { to: `${ROOT}`, label: "Dashboard", icon: LayoutDashboard, end: true },
+  { to: `${ROOT}/products`, label: "Products", icon: Package },
+  { to: `${ROOT}/categories`, label: "Categories", icon: Layers },
+  { to: `${ROOT}/blogs`, label: "Journal", icon: FileText },
+  { to: `${ROOT}/testimonials`, label: "Testimonials", icon: MessageSquare },
+  { to: `${ROOT}/inquiries`, label: "Inquiries", icon: Inbox },
+  { to: `${ROOT}/settings`, label: "Site Settings", icon: Settings },
 ];
 
 export default function AdminLayout() {
   const { session, loading } = useAuth();
   const loc = useLocation();
   if (loading) return <div className="p-24 text-center" style={{color:"var(--ink-2)"}}>Loading…</div>;
-  if (!session) return <Navigate to="/admin/login" state={{ from: loc }} replace />;
+  if (!session) return <Navigate to="/root-access-mvr/login" state={{ from: loc }} replace />;
 
   return (
     <div className="min-h-screen flex" style={{ background: "var(--cream)" }}>

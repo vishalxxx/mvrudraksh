@@ -40,8 +40,8 @@ function App() {
               <Route path="/sitemap" element={wrap(<Sitemap />)} />
               <Route path="/search" element={wrap(<SearchPage />)} />
 
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin" element={<AdminLayout />}>
+              <Route path="/root-access-mvr/login" element={<AdminLogin />} />
+              <Route path="/root-access-mvr" element={<AdminLayout />}>
                 <Route index element={<Dashboard />} />
                 <Route path="products" element={<AdminProducts />} />
                 <Route path="categories" element={<AdminCategories />} />

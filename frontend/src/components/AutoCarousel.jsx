@@ -2,11 +2,34 @@ import React from "react";
 
 /**
  * AutoCarousel — continuous CSS-driven marquee. No arrows.
- * Duplicates children for a seamless loop. Pauses on hover.
+ * Only animates + duplicates children when the item count is large enough
+ * to require scrolling. Otherwise renders the items statically centred so
+ * a small featured set (e.g. 2-3 items) never appears as duplicates.
  */
-export default function AutoCarousel({ children, itemClass = "w-72", gap = "gap-5", speed = 40 }) {
+export default function AutoCarousel({
+  children,
+  itemClass = "w-72",
+  gap = "gap-5",
+  speed = 40,
+  // Below this count, we render statically (no duplication, no animation).
+  minLoop = 6,
+}) {
   const items = React.Children.toArray(children);
   if (items.length === 0) return null;
+
+  const shouldLoop = items.length >= minLoop;
+
+  if (!shouldLoop) {
+    return (
+      <div className="relative overflow-hidden" data-testid="auto-carousel">
+        <div className={`flex ${gap} flex-wrap justify-center`}>
+          {items.map((child, i) => (
+            <div key={i} className={`shrink-0 ${itemClass}`}>{child}</div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative overflow-hidden mv-carousel" data-testid="auto-carousel">
@@ -15,7 +38,9 @@ export default function AutoCarousel({ children, itemClass = "w-72", gap = "gap-
         style={{ animationDuration: `${speed}s` }}
       >
         {[...items, ...items].map((child, i) => (
-          <div key={i} className={`shrink-0 ${itemClass}`}>{child}</div>
+          <div key={i} className={`shrink-0 ${itemClass}`} aria-hidden={i >= items.length ? "true" : undefined}>
+            {child}
+          </div>
         ))}
       </div>
       <style>{`

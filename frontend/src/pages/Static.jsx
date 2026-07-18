@@ -196,7 +196,7 @@ export function SearchPage() {
       <div className="overline">Search results for</div>
       <h1 className="font-serif-display text-4xl mt-2" style={{color:"var(--ink)"}}>"{q}"</h1>
       <h2 className="font-serif-display text-2xl mt-10 mb-4" style={{color:"var(--ink)"}}>Products ({prods.length})</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">{prods.map(p=><ProductCard key={p.id} p={p}/>)}</div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">{prods.map(p=><ProductCard key={p.id} p={p}/>)}</div>
       <h2 className="font-serif-display text-2xl mt-14 mb-4" style={{color:"var(--ink)"}}>Journal ({blogs.length})</h2>
       <ul className="space-y-3">{blogs.map(b=><li key={b.id}><Link to={`/journal/${b.slug}`} className="hover:text-[var(--copper)]">{b.title}</Link></li>)}</ul>
     </div>

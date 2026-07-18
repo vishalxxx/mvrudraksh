@@ -74,14 +74,14 @@ export default function ProductDetail() {
       <div className="grid lg:grid-cols-[minmax(0,42%)_1fr] gap-12 items-start">
         {/* Gallery */}
         <div>
-          <div className="rounded-md overflow-hidden aspect-[4/5] max-w-md mx-auto lg:max-w-none" style={{ background: "var(--cream)" }}>
-            <img data-testid="pd-main-image" src={imgs[activeImg]?.url} alt={p.name} className="w-full h-full object-cover"/>
+          <div className="rounded-md overflow-hidden aspect-[4/5] max-w-md mx-auto lg:max-w-none border bg-white" style={{ borderColor: "rgba(209,199,177,0.5)" }}>
+            <img data-testid="pd-main-image" src={imgs[activeImg]?.url} alt={p.name} className="w-full h-full object-contain"/>
           </div>
           {imgs.length > 1 && (
             <div className="mt-4 grid grid-cols-5 gap-3">
               {imgs.map((im, i) => (
-                <button key={i} onClick={()=>setActiveImg(i)} className={`aspect-square rounded-md overflow-hidden border ${activeImg===i?"":""}`} style={{ borderColor: activeImg===i ? "var(--copper)" : "var(--line)" }}>
-                  <img src={im.url} alt="" className="w-full h-full object-cover"/>
+                <button key={i} onClick={()=>setActiveImg(i)} className={`aspect-square rounded-md overflow-hidden border bg-white ${activeImg===i?"":""}`} style={{ borderColor: activeImg===i ? "var(--copper)" : "var(--line)" }}>
+                  <img src={im.url} alt="" className="w-full h-full object-contain"/>
                 </button>
               ))}
             </div>

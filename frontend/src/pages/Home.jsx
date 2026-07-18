@@ -79,7 +79,7 @@ export default function Home() {
       {/* Featured products carousel */}
       {featured.length > 0 && (
         <Section title="Featured Rudraksha" overline="Handpicked">
-          <AutoCarousel speed={50} itemClass="w-64 sm:w-72">
+          <AutoCarousel speed={50} itemClass="w-56 sm:w-64">
             {featured.map((p) => <ProductCard key={p.id} p={p} />)}
           </AutoCarousel>
         </Section>
@@ -110,7 +110,7 @@ export default function Home() {
       {/* Best Sellers */}
       {best.length > 0 && (
         <Section title="Best Sellers" overline="Loved by seekers">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">{best.map(p => <ProductCard key={p.id} p={p} />)}</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">{best.map(p => <ProductCard key={p.id} p={p} />)}</div>
         </Section>
       )}
 

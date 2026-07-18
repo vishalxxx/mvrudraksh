@@ -16,7 +16,7 @@ export default function ProductCard({ p }) {
       className="group block bg-white border rounded-md overflow-hidden transition-all duration-300 hover:shadow-[0_10px_40px_rgba(44,30,22,0.08)]"
       style={{ borderColor: "rgba(209,199,177,0.5)" }}
     >
-      <div className="relative overflow-hidden aspect-[4/5]" style={{ background: "var(--cream)" }}>
+      <div className="relative overflow-hidden aspect-[4/5] bg-white">
         <img src={productImage(p)} alt={p.name} className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105" loading="lazy" />
         <div className="absolute top-3 left-3 flex flex-col gap-1">
           {p.is_bestseller && <span className="text-[10px] uppercase tracking-wider px-2 py-1 rounded-sm" style={{ background: "var(--copper)", color: "white" }}>Best Seller</span>}

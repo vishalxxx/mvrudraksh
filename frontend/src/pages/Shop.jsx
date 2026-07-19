@@ -65,6 +65,10 @@ export default function Shop() {
     return list;
   }, [all, selectedCategory, selectedMukhi, selectedOrigin, selectedPC, minPrice, maxPrice, q, sort]);
 
+  const catObj = useMemo(() => {
+    return cats.find(c => c.slug === selectedCategory);
+  }, [cats, selectedCategory]);
+
   const mukhis = [...new Set(all.map(p => p.mukhi).filter(Boolean))];
   const origins = [...new Set(all.map(p => p.origin).filter(Boolean))];
   const productCats = [...new Set(all.map(p => p.collection).filter(Boolean))];
@@ -93,10 +97,26 @@ export default function Shop() {
         path={selectedCategory ? `/shop?category=${selectedCategory}` : "/shop"}
         jsonLd={breadcrumbSchema([{name:"Home",path:"/"},{name:"Shop",path:"/shop"},...(selectedCategory ? [{name: cats.find(c=>c.slug===selectedCategory)?.name || selectedCategory, path:`/shop?category=${selectedCategory}`}] : [])])}
       />
-      <div className="text-center mb-12">
-        <div className="overline">Sacred Catalog</div>
-        <h1 className="font-serif-display text-5xl sm:text-6xl mt-3" style={{ color: "var(--ink)" }}>Shop Rudraksha</h1>
-      </div>
+      
+      {catObj && (catObj.banner_url || catObj.image_url) ? (
+        <div 
+          className="relative w-full rounded-md overflow-hidden mb-12 aspect-[21/9] sm:aspect-[4/1] min-h-[160px] flex items-center justify-center text-center p-6 bg-cover bg-center" 
+          style={{ backgroundImage: `url(${catObj.banner_url || catObj.image_url})` }}
+          data-testid="category-banner"
+        >
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-[0.5px]" />
+          <div className="relative z-10 text-white max-w-2xl">
+            <div className="overline text-[#F5D989] tracking-[0.2em] mb-2">Collection</div>
+            <h1 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl text-[#FDFBF7] mb-3">{catObj.name}</h1>
+            {catObj.description && <p className="text-sm sm:text-base font-light text-[#FDFBF7]/90">{catObj.description}</p>}
+          </div>
+        </div>
+      ) : (
+        <div className="text-center mb-12">
+          <div className="overline">Sacred Catalog</div>
+          <h1 className="font-serif-display text-5xl sm:text-6xl mt-3" style={{ color: "var(--ink)" }}>Shop Rudraksha</h1>
+        </div>
+      )}
 
       <div className="lg:grid lg:grid-cols-[280px_1fr] gap-10">
         {/* Sidebar */}

@@ -255,10 +255,10 @@ def create_admin():
 def seed():
     # Categories
     cats = [
-        {"slug":"mukhi-rudraksha","name":"Mukhi Rudraksha","description":"Genuine Mukhi Rudraksha beads from Nepal & Java, certified for authenticity.","image_url":"https://images.unsplash.com/photo-1613274146063-8930e164c743?w=800","sort_order":1},
-        {"slug":"rudraksha-mala","name":"Rudraksha Mala","description":"Handcrafted 108-bead malas for meditation and daily wear.","image_url":"https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800","sort_order":2},
-        {"slug":"bracelets","name":"Bracelets","description":"Sacred Rudraksha bracelets combining spirituality with elegance.","image_url":"https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=800","sort_order":3},
-        {"slug":"combinations","name":"Combinations","description":"Powerful Rudraksha & gemstone combinations for specific purposes.","image_url":"https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=800","sort_order":4},
+        {"slug":"mukhi-rudraksha","name":"Mukhi Rudraksha","description":"Genuine Mukhi Rudraksha beads from Nepal & Java, certified for authenticity.","image_url":"https://images.unsplash.com/photo-1613274146063-8930e164c743?w=800","banner_url":"https://images.unsplash.com/photo-1613274146063-8930e164c743?w=1600","sort_order":1},
+        {"slug":"rudraksha-mala","name":"Rudraksha Mala","description":"Handcrafted 108-bead malas for meditation and daily wear.","image_url":"https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800","banner_url":"https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1600","sort_order":2},
+        {"slug":"bracelets","name":"Bracelets","description":"Sacred Rudraksha bracelets combining spirituality with elegance.","image_url":"https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=800","banner_url":"https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=1600","sort_order":3},
+        {"slug":"combinations","name":"Combinations","description":"Powerful Rudraksha & gemstone combinations for specific purposes.","image_url":"https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=800","banner_url":"https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=1600","sort_order":4},
     ]
     for c in cats:
         sb.table("categories").upsert(c, on_conflict="slug").execute()
